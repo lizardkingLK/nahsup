@@ -1,5 +1,6 @@
 const { app, BrowserWindow, Menu, ipcMain } = require('electron')
 const { channels } = require('../src/shared/constants')
+const meta = require('./config/meta')
 const path = require('path')
 const url = require('url')
 
@@ -10,6 +11,7 @@ function createWindow() {
     win = new BrowserWindow({
         width: 800,
         height: 600,
+        icon: path.join(__dirname, '/../icon/Icon.png'),
         webPreferences: {
             nodeIntegration: true,
             preload: path.join(__dirname, 'preload.js'),
