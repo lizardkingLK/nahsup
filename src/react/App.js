@@ -1,5 +1,6 @@
 import React from 'react';
-import './App.css';
+import { Typography, Link } from '@material-ui/core';
+import AppStepper from './components/stepper/AppStepper';
 import { channels } from '../shared/constants';
 
 const { ipcRenderer } = window;
@@ -7,11 +8,10 @@ const { ipcRenderer } = window;
 class App extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       appName: '',
-      appVersion: '',
-    };
+      appVersion: ''
+    }
   }
 
   componentDidMount() {
@@ -21,16 +21,25 @@ class App extends React.Component {
       ipcRenderer.removeAllListeners(channels.APP_INFO);
       const { appName, appVersion } = arg;
       this.setState({ appName, appVersion });
-    });
+    })
   }
 
   render() {
     const { appName, appVersion } = this.state;
     return (
-      <div className="App">
-        <header className="App-header">
-          <p>{appName} version {appVersion}</p>
-        </header>
+      <div className="app">
+        <Typography className="app-title" variant="h4" component="h2">
+          {appName}
+        </Typography>
+        <Typography variant="caption" component="h2">
+          v{appVersion}
+        </Typography>
+        <AppStepper />
+        <Typography variant="body1" component="h2">
+          <Link href="/login">
+            Login
+          </Link>
+        </Typography>
       </div>
     );
   }

@@ -42,6 +42,7 @@ function createWindow() {
             submenu: [
                 { label: 'submenu label 1' },
                 { label: 'submenu label 2' },
+                { type: 'separator' },
                 {
                     label: 'Exit',
                     click() {
