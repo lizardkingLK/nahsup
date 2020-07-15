@@ -1,8 +1,8 @@
 import React from 'react';
 import { Typography, Link } from '@material-ui/core';
 import AppStepper from './components/stepper/AppStepper';
+import { Provider } from 'react-redux';
 import { channels } from '../shared/constants';
-
 const { ipcRenderer } = window;
 
 class App extends React.Component {
@@ -24,6 +24,10 @@ class App extends React.Component {
     })
   }
 
+  loginController = (result) => {
+    console.log(result)
+  }
+
   render() {
     const { appName, appVersion } = this.state;
     return (
@@ -35,11 +39,9 @@ class App extends React.Component {
           v{appVersion}
         </Typography>
         <AppStepper />
-        <Typography variant="body1" component="h2">
-          <Link href="/login">
-            Login
-          </Link>
-        </Typography>
+        <Link href="/login">
+          Login
+        </Link>
       </div>
     );
   }

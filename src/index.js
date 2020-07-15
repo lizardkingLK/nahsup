@@ -4,6 +4,7 @@ import { Route, Switch, BrowserRouter as Router } from 'react-router-dom';
 import './index.css';
 import App from './react/App';
 import Login from './react/Login';
+import Dashboard from './react/Dashboard';
 import NotFound from './react/NotFound';
 import * as serviceWorker from './serviceWorker';
 
@@ -13,6 +14,7 @@ const routing = (
       <Switch>
         <Route exact path='/' component={App}></Route>
         <Route path='/login' component={Login}></Route>
+        <Route path='/dashboard' component={Dashboard}></Route>
         <Route component={NotFound}></Route>
       </Switch>
     </>

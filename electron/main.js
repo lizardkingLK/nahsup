@@ -1,6 +1,6 @@
 const { app, BrowserWindow, Menu, ipcMain } = require('electron')
 const { channels } = require('../src/shared/constants')
-const meta = require('./config/meta')
+const meta = require('./meta')
 const path = require('path')
 const url = require('url')
 

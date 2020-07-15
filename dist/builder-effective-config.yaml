@@ -12,5 +12,7 @@ publish:
   provider: github
   repo: pushan
   owner: lizardkingLK
+win:
+  icon: build/icon/Icon.png
 extends: react-cra
 electronVersion: 9.1.0

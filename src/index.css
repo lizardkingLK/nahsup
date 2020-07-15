@@ -14,15 +14,18 @@
   font-family: var(--primaryFont);
 }
 
-.app {
+.app,
+.login {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   margin: 5vh 0;
+  height: 80vh;
 }
 
-.app-title {
+.app-title,
+.login-title {
   font-family: var(--secondaryFont);
   color: var(--primaryAccent);
 }
