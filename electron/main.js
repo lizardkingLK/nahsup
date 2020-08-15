@@ -1,6 +1,5 @@
 const { app, BrowserWindow, Menu, ipcMain } = require('electron')
 const { channels } = require('../src/shared/constants')
-const meta = require('./meta')
 const path = require('path')
 const url = require('url')
 
@@ -11,7 +10,6 @@ function createWindow() {
     win = new BrowserWindow({
         width: 800,
         height: 600,
-        icon: path.join(__dirname, '/../icon/Icon.png'),
         webPreferences: {
             nodeIntegration: true,
             preload: path.join(__dirname, 'preload.js'),
@@ -19,11 +17,12 @@ function createWindow() {
     })
 
     // and load the index.html of the app.
-    win.loadURL(process.env.ELECTRON_START_URL || url.format({
-        pathname: path.join(__dirname, '../index.html'),
-        protocol: 'file:',
-        slashes: true
-    }))
+    win.loadURL(
+        process.env.ELECTRON_START_URL || url.format({
+            pathname: path.join(__dirname, '../index.html'),
+            protocol: 'file:',
+            slashes: true
+        }))
 
     // Open the DevTools.
     win.webContents.openDevTools()
