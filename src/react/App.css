@@ -1,0 +1,16 @@
+.header {
+    display: 'flex';
+    flex-Direction: 'row';
+    align-Items: 'center';
+    justify-Content: 'space-between';
+    height: '5vh';
+    padding: '.5vh';
+}
+
+.header .headerLeft {
+    width: '20vw'
+}
+
+.header .headerRight {
+    width: '80vw'
+}

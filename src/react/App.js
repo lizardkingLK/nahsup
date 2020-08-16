@@ -1,5 +1,7 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { CSSTransition } from 'react-transition-group';
+import Body from './components/body/Body';
+
 import { channels } from '../shared/constants';
 const { ipcRenderer } = window.require('electron');
 
@@ -14,6 +16,7 @@ class App extends React.Component {
 
   componentDidMount() {
     ipcRenderer.send(channels.APP_INFO);
+
     ipcRenderer.on(channels.APP_INFO, (event, arg) => {
       ipcRenderer.removeAllListeners(channels.APP_INFO);
       const { appName, appVersion } = arg;
@@ -23,16 +26,19 @@ class App extends React.Component {
 
   render() {
     const { appName, appVersion } = this.state;
+    console.log(`${appName} ${appVersion}`)
 
     return (
-      <div className="app">
-        <Typography className="app-title" variant="h4" component="h2">
-          {appName}
-        </Typography>
-        <Typography variant="caption" component="h2">
-          v{appVersion}
-        </Typography>
-      </div>
+      <CSSTransition
+        in={true}
+        appear={true}
+        timeout={300}
+        classNames='fade'
+      >
+        <>
+          <Body />
+        </>
+      </CSSTransition>
     );
   }
 }
