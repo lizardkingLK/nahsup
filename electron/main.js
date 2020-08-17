@@ -8,8 +8,8 @@ let win
 function createWindow() {
     // Create the browser window.
     win = new BrowserWindow({
-        width: 1000,
-        height: 640,
+        width: 1024,
+        height: 700,
         webPreferences: {
             nodeIntegration: true,
             preload: path.join(__dirname, 'preload.js'),

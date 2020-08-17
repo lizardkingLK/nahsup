@@ -7,6 +7,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Radio from '@material-ui/core/Radio';
 import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
@@ -22,8 +23,14 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-const Posts = ({ locations, loading }) => {
+const Posts = ({ locations, loading, handleRadioChange }) => {
     const classes = useStyles();
+    const [selectedValue, setSelectedValue] = React.useState('');
+
+    const handleChange = (e) => {
+        setSelectedValue(e.target.value);
+        handleRadioChange(e.target.value);
+    }
 
     if (loading) {
         return <Typography variant="caption" component="h3" >Loading Table...</Typography>
@@ -34,15 +41,23 @@ const Posts = ({ locations, loading }) => {
             <Table className={classes.table} aria-label="locations table">
                 <TableHead>
                     <TableRow>
-                        <TableCell>Building ID</TableCell>
-                        <TableCell align="right">Room ID</TableCell>
+                        <TableCell>Room ID</TableCell>
+                        <TableCell align="right">Building ID</TableCell>
                         <TableCell align="right">Capacity</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {locations.map((row) => (
+                    {locations.map((row, index) => (
                         <TableRow key={row.rID}>
                             <TableCell component="th" scope="row">
+                                <Radio
+                                    checked={selectedValue === row.rID}
+                                    onChange={handleChange}
+                                    value={row.rID}
+                                    color="primary"
+                                    name="radio-button-location"
+                                    inputProps={{ 'aria-label': row.rID }}
+                                />
                                 {row.rID}
                             </TableCell>
                             <TableCell align="right">{row.bID}</TableCell>

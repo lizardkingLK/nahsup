@@ -218,7 +218,7 @@ export default function MiniDrawer() {
 
             <main className={classes.content}>
                 <div className={classes.toolbar} />
-                <Typography variant="body1" component="h1">
+                <Typography variant="body1" component="h1" color="primary">
                     {label}
                 </Typography>
                 <div>

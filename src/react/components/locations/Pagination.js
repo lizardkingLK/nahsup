@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     pagination: {
@@ -11,6 +11,11 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1),
         listStyle: 'none',
     },
+    listItem: {
+        paddingLeft: 10,
+        paddingRight: 10,
+        cursor: 'pointer',
+    }
 }))
 
 const MyPagination = ({ locationsPerPage, totalLocations, paginate }) => {
@@ -26,9 +31,15 @@ const MyPagination = ({ locationsPerPage, totalLocations, paginate }) => {
             <ul className={classes.pagination}>
                 {pageNumbers.map(number => (
                     <li key={number}>
-                        <Button size="small" onClick={() => paginate(number)} className="page-link">
+                        <Typography
+                            variant="caption"
+                            component="h6"
+                            color="primary"
+                            onClick={() => paginate(number)}
+                            className={classes.listItem}
+                        >
                             {number}
-                        </Button>
+                        </Typography>
                     </li>
                 ))}
             </ul>

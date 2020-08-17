@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, IconButton } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/Info';
@@ -39,21 +39,12 @@ const createData = (rID, bID, capacity) => {
 const Locations = () => {
     const classes = useStyles();
 
-    const [locations, setLocations] = useState([
-        createData('A501', 'A-Block', 120),
-        createData('B502', 'B-Block', 120),
-        createData('N3B-plcab', 'New Building', 60),
-        createData('B502', 'B-Block', 120),
-        createData('N3B-plcab', 'New Building', 60),
-        createData('A501', 'A-Block', 120),
-        createData('N3B-plcab', 'New Building', 60),
-        createData('A501', 'A-Block', 120),
-        createData('B502', 'B-Block', 120),
-    ]);
+    const [locations, setLocations] = useState([]);
 
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [locationsPerPage] = useState(3);
+    const [selected, setSelected] = useState('');
 
     // get current locations
     const indexOfLastLocation = currentPage * locationsPerPage;
@@ -63,6 +54,34 @@ const Locations = () => {
     // change page
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
+    }
+
+    // useeffect => runs when mounted and also when content gets updated
+    useEffect(() => {
+        const fetchLocations = () => {
+            setLoading(true)
+            // const res = await axios.get('https://jsonplaceholder.typicode.com/posts');
+            setLocations([
+                createData('A501', 'A-Block', 120),
+                createData('B501', 'B-Block', 120),
+                createData('N3B-plcab', 'New Building', 60),
+                createData('B502', 'B-Block', 120),
+                createData('N3B-plcab', 'New Building', 60),
+                createData('A501', 'A-Block', 120),
+                createData('N3B-plcab', 'New Building', 60),
+                createData('A501', 'A-Block', 120),
+                createData('B503', 'B-Block', 120),
+            ]);
+            setLoading(false);
+        }
+
+        fetchLocations();
+    }, []);
+
+    // location selection changed
+    const handleRadioChange = (value) => {
+        console.log(value)
+        setSelected(value)
     }
 
     return (
@@ -81,6 +100,7 @@ const Locations = () => {
                     size="small"
                     color="primary"
                     component="span"
+                    disabled={selected === ''}
                 >
                     <InfoIcon />
                 </IconButton>
@@ -99,6 +119,7 @@ const Locations = () => {
                 <Table
                     locations={currentLocations}
                     loading={loading}
+                    handleRadioChange={handleRadioChange}
                 />
             </div>
 
@@ -148,6 +169,7 @@ const Locations = () => {
                     size="medium"
                     color="primary"
                     component="span"
+                    disabled={selected === ''}
                 >
                     <EditIcon />
                 </IconButton>
@@ -155,6 +177,7 @@ const Locations = () => {
                     size="medium"
                     color="primary"
                     component="span"
+                    disabled={selected === ''}
                 >
                     <DeleteIcon />
                 </IconButton>
