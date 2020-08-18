@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, IconButton } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/Info';
-import SearchIcon from '@material-ui/icons/Search';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import AddIcon from '@material-ui/icons/Add';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
 import Table from './Table';
 import Pagination from './Pagination';
+import AdvancedSearch from './AdvancedSearch';
+import AddLocation from './AddLocation';
 
 const useStyles = makeStyles((theme) => ({
     row: {
@@ -20,15 +20,13 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'space-between',
         margin: theme.spacing(1),
     },
-    labeledButton: {
-        margin: theme.spacing(1),
-    },
     table: {
         minWidth: 650,
     },
     pref: {
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(1),
+        width: 200,
     }
 }))
 
@@ -38,7 +36,6 @@ const createData = (rID, bID, capacity) => {
 
 const Locations = () => {
     const classes = useStyles();
-
     const [locations, setLocations] = useState([]);
 
     const [loading, setLoading] = useState(false);
@@ -84,18 +81,18 @@ const Locations = () => {
         setSelected(value)
     }
 
+    // prompted building for advanced search
+    const filterChanged = (value) => {
+        console.log(value)
+        setLocations(locations.filter(l => l.bID === value));
+    }
+
     return (
         <div className="locations">
             <div className={classes.row}>
-                <Button
-                    variant="contained"
-                    size="small"
-                    color="primary"
-                    className={classes.labeledButton}
-                    startIcon={<SearchIcon />}
-                >
-                    Advanced
-                </Button>
+                <AdvancedSearch
+                    filterChanged={filterChanged}
+                />
                 <IconButton
                     size="small"
                     color="primary"
@@ -181,13 +178,7 @@ const Locations = () => {
                 >
                     <DeleteIcon />
                 </IconButton>
-                <IconButton
-                    size="medium"
-                    color="primary"
-                    component="span"
-                >
-                    <AddIcon />
-                </IconButton>
+                <AddLocation />
             </div>
         </div>
     )

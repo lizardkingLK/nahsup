@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-const Posts = ({ locations, loading, handleRadioChange }) => {
+const LocationsTable = ({ locations, loading, handleRadioChange }) => {
     const classes = useStyles();
     const [selectedValue, setSelectedValue] = React.useState('');
 
@@ -48,7 +48,7 @@ const Posts = ({ locations, loading, handleRadioChange }) => {
                 </TableHead>
                 <TableBody>
                     {locations.map((row, index) => (
-                        <TableRow key={row.rID}>
+                        <TableRow key={index}>
                             <TableCell component="th" scope="row">
                                 <Radio
                                     checked={selectedValue === row.rID}
@@ -70,4 +70,4 @@ const Posts = ({ locations, loading, handleRadioChange }) => {
     )
 }
 
-export default Posts;
+export default LocationsTable;
