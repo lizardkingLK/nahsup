@@ -3,6 +3,9 @@ const { channels } = require('../src/shared/constants')
 const path = require('path')
 const url = require('url')
 
+const connection = require('./connection')
+const LocationDao = require('./LocationDao')
+
 let win
 
 function createWindow() {
@@ -28,7 +31,7 @@ function createWindow() {
     win.webContents.openDevTools()
 
     // Emitted when the window is closed.
-    win.on('closed', () => {
+    win.on('closed', async () => {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
@@ -39,8 +42,7 @@ function createWindow() {
         {
             label: 'Menu',
             submenu: [
-                { label: 'submenu label 1' },
-                { label: 'submenu label 2' },
+                { label: 'Refresh' },
                 { type: 'separator' },
                 {
                     label: 'Exit',
@@ -91,8 +93,64 @@ app.on('activate', () => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 ipcMain.on(channels.APP_INFO, (event) => {
-    event.sender.send(channels.APP_INFO, {
-        appName: app.getName(),
-        appVersion: app.getVersion(),
-    });
-});
+    connection(function ({ success }) {
+        event.sender.send(channels.APP_INFO, {
+            appName: app.getName(),
+            appVersion: app.getVersion(),
+            appConnection: success,
+        })
+    })
+})
+
+ipcMain.on(channels.LOAD_BUILDINGS, async (event) => {
+    await LocationDao.loadBuildings(function (bs) {
+        const bsArray = bs.map(b => {
+            const bID = b.bID
+            const id = b._id.toString()
+            return ({ bID, id })
+        })
+        event.sender.send(channels.LOAD_BUILDINGS, bsArray)
+    })
+})
+
+ipcMain.on(channels.ADD_BUILDING, async (event, arg) => {
+    const { newBuilding } = arg;
+    await LocationDao.addBuilding(newBuilding, function (b) {
+        if (b)
+            event.sender.send(channels.ADD_BUILDING, {
+                success: true
+            })
+        else
+            event.sender.send(channels.ADD_BUILDING, {
+                success: false
+            })
+    })
+})
+
+ipcMain.on(channels.ADD_ROOM, async (event, arg) => {
+    const { newRoomID, roomType, buildingID, capacity } = arg
+    await LocationDao.addRoom(newRoomID, roomType, buildingID, capacity, function (r) {
+        if (r)
+            event.sender.send(channels.ADD_ROOM, {
+                success: true
+            })
+        else
+            event.sender.send(channels.ADD_ROOM, {
+                success: false
+            })
+    })
+})
+
+ipcMain.on(channels.LOAD_ROOMS, async (event) => {
+    await LocationDao.loadRooms(function (rs) {
+        const rsArray = rs.map(r => {
+            const rID = r.rID
+            const rType = r.rType
+            const bID = r.bID
+            const capacity = r.capacity
+            const id = r._id.toString()
+            return ({ rID, rType, bID, capacity, id })
+        })
+        event.sender.send(channels.LOAD_ROOMS, rsArray)
+    })
+})

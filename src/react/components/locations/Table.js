@@ -42,24 +42,26 @@ const LocationsTable = ({ locations, loading, handleRadioChange }) => {
                 <TableHead>
                     <TableRow>
                         <TableCell>Room ID</TableCell>
+                        <TableCell align="right">Room Type</TableCell>
                         <TableCell align="right">Building ID</TableCell>
                         <TableCell align="right">Capacity</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {locations.map((row, index) => (
-                        <TableRow key={index}>
+                    {locations.map(row => (
+                        <TableRow key={row.id}>
                             <TableCell component="th" scope="row">
                                 <Radio
-                                    checked={selectedValue === row.rID}
+                                    checked={selectedValue === row.id}
                                     onChange={handleChange}
-                                    value={row.rID}
+                                    value={row.id}
                                     color="primary"
                                     name="radio-button-location"
-                                    inputProps={{ 'aria-label': row.rID }}
+                                    inputProps={{ 'aria-label': row.id }}
                                 />
                                 {row.rID}
                             </TableCell>
+                            <TableCell align="right">{row.rType}</TableCell>
                             <TableCell align="right">{row.bID}</TableCell>
                             <TableCell align="right">{row.capacity}</TableCell>
                         </TableRow>

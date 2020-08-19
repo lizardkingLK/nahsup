@@ -1,2 +1,4 @@
-const { ipcRenderer } = require('electron');
-window.ipcRenderer = ipcRenderer;
+const { ipcRenderer } = require('electron')
+
+// channel establishment for communication
+window.ipcRenderer = ipcRenderer

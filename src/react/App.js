@@ -10,7 +10,8 @@ class App extends React.Component {
     super(props);
     this.state = {
       appName: '',
-      appVersion: ''
+      appVersion: '',
+      appConnection: false
     }
   }
 
@@ -19,14 +20,14 @@ class App extends React.Component {
 
     ipcRenderer.on(channels.APP_INFO, (event, arg) => {
       ipcRenderer.removeAllListeners(channels.APP_INFO);
-      const { appName, appVersion } = arg;
-      this.setState({ appName, appVersion });
+      const { appName, appVersion, appConnection } = arg;
+      this.setState({ appName, appVersion, appConnection });
     });
   }
 
   render() {
-    const { appName, appVersion } = this.state;
-    console.log(`${appName} ${appVersion}`)
+    const { appName, appVersion, appConnection } = this.state;
+    console.log(`${appName} ${appVersion} ${appConnection}`)
 
     return (
       <CSSTransition

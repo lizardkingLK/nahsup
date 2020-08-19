@@ -12,6 +12,9 @@ import Pagination from './Pagination';
 import AdvancedSearch from './AdvancedSearch';
 import AddLocation from './AddLocation';
 
+import { channels } from '../../../shared/constants';
+const { ipcRenderer } = window.require('electron');
+
 const useStyles = makeStyles((theme) => ({
     row: {
         display: 'flex',
@@ -30,8 +33,8 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-const createData = (rID, bID, capacity) => {
-    return { rID, bID, capacity };
+const createData = (rID, rType, bID, capacity, id) => {
+    return { rID, rType, bID, capacity, id };
 }
 
 const Locations = () => {
@@ -54,26 +57,27 @@ const Locations = () => {
     }
 
     // useeffect => runs when mounted and also when content gets updated
-    useEffect(() => {
-        const fetchLocations = () => {
-            setLoading(true)
-            // const res = await axios.get('https://jsonplaceholder.typicode.com/posts');
-            setLocations([
-                createData('A501', 'A-Block', 120),
-                createData('B501', 'B-Block', 120),
-                createData('N3B-plcab', 'New Building', 60),
-                createData('B502', 'B-Block', 120),
-                createData('N3B-plcab', 'New Building', 60),
-                createData('A501', 'A-Block', 120),
-                createData('N3B-plcab', 'New Building', 60),
-                createData('A501', 'A-Block', 120),
-                createData('B503', 'B-Block', 120),
-            ]);
-            setLoading(false);
-        }
+    const fetchLocations = async () => {
+        setLoading(true);
+        await ipcRenderer.send(channels.LOAD_ROOMS);
 
+        ipcRenderer.on(channels.LOAD_ROOMS, (event, arg) => {
+            ipcRenderer.removeAllListeners(channels.LOAD_ROOMS);
+            const rs = arg;
+            const rsArray = rs.map(r => createData(r.rID, r.rType, r.bID, r.capacity, r.id))
+            setLocations(rsArray);
+        });
+        setLoading(false);
+    }
+
+    useEffect(() => {
         fetchLocations();
     }, []);
+
+    // refresh table
+    const locationsUpdated = () => {
+        fetchLocations();
+    }
 
     // location selection changed
     const handleRadioChange = (value) => {
@@ -178,7 +182,7 @@ const Locations = () => {
                 >
                     <DeleteIcon />
                 </IconButton>
-                <AddLocation />
+                <AddLocation locationsUpdated={locationsUpdated} />
             </div>
         </div>
     )
