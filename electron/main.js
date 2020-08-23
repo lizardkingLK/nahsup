@@ -5,6 +5,7 @@ const url = require('url')
 
 const connection = require('./connection')
 const LocationDao = require('./LocationDao')
+const SubjectDao = require('./SubjectDao')
 
 let win
 
@@ -92,6 +93,8 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+// locations
 ipcMain.on(channels.APP_INFO, (event) => {
     connection(function ({ success }) {
         event.sender.send(channels.APP_INFO, {
@@ -153,4 +156,94 @@ ipcMain.on(channels.LOAD_ROOMS, async (event) => {
         })
         event.sender.send(channels.LOAD_ROOMS, rsArray)
     })
+})
+
+ipcMain.on(channels.SEARCH_ROOMS, async (event, arg) => {
+    const { keyword } = arg
+    await LocationDao.searchRooms(keyword, function (rs) {
+        const rsArray = rs.map(r => {
+            const rID = r.rID
+            const rType = r.rType
+            const bID = r.bID
+            const capacity = r.capacity
+            const id = r._id.toString()
+            return ({ rID, rType, bID, capacity, id })
+        })
+        event.sender.send(channels.SEARCH_ROOMS, rsArray)
+    })
+})
+
+ipcMain.on(channels.DELETE_ROOM, async (event, arg) => {
+    const { selected } = arg
+    await LocationDao.deleteRoom(selected, function (r) {
+        const { success } = r
+        event.sender.send(channels.DELETE_ROOM, {
+            success: success
+        })
+    })
+})
+
+ipcMain.on(channels.EDIT_ROOM, async (event, arg) => {
+    const { newRoomID, roomType, buildingID, capacity, lid } = arg
+    await LocationDao.editRoom(newRoomID, roomType, buildingID, capacity, lid, function (r) {
+        const { success } = r
+        event.sender.send(channels.EDIT_ROOM, {
+            success: success
+        })
+    })
+})
+
+// subjects
+ipcMain.on(channels.LOAD_SUBJECTS, async (event) => {
+    await SubjectDao.loadSubjects(function (rs) {
+        const subArray = rs.map(r => {
+            const subCode = r.subCode
+            const year = r.year
+            const sem = r.sem
+            const name = r.name
+            const lecHrs = r.lecHrs
+            const tuteHrs = r.tuteHrs
+            const labHrs = r.labHrs
+            const evalHrs = r.evalHrs
+            const id = r._id.toString()
+            return ({ subCode, year, sem, name, lecHrs, tuteHrs, labHrs, evalHrs, id })
+        })
+        event.sender.send(channels.LOAD_SUBJECTS, subArray)
+    })
+})
+
+ipcMain.on(channels.EDIT_SUBJECT, async (event, arg) => {
+    const { subjectCode, subYear, subSem, subName, subLecHrs, subTuteHrs, subLabHrs, subEvalHrs, id } = arg
+    await SubjectDao.editSubject
+        (subjectCode, subYear, subSem, subName, subLecHrs, subTuteHrs, subLabHrs, subEvalHrs, id, function (r) {
+            const { success } = r
+            event.sender.send(channels.EDIT_SUBJECT, {
+                success: success
+            })
+        })
+})
+
+ipcMain.on(channels.DELETE_SUBJECT, async (event, arg) => {
+    const { selected } = arg
+    await SubjectDao.deleteSubject(selected, function (r) {
+        const { success } = r
+        event.sender.send(channels.DELETE_SUBJECT, {
+            success: success
+        })
+    })
+})
+
+ipcMain.on(channels.ADD_SUBJECT, async (event, arg) => {
+    const { subjectCode, subYear, subSem, subName, subLecHrs, subTuteHrs, subLabHrs, subEvalHrs } = arg
+    await SubjectDao.addSubject
+        (subjectCode, subYear, subSem, subName, subLecHrs, subTuteHrs, subLabHrs, subEvalHrs, function (r) {
+            if (r)
+                event.sender.send(channels.ADD_SUBJECT, {
+                    success: true
+                })
+            else
+                event.sender.send(channels.ADD_SUBJECT, {
+                    success: false
+                })
+        })
 })

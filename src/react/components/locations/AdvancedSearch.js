@@ -1,50 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import SearchIcon from '@material-ui/icons/Search';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const useStyles = makeStyles((theme) => ({
     labeledButton: {
         margin: theme.spacing(1),
     },
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 120,
+    },
 }))
 
-export default function AdvancedSearch({ filterChanged }) {
+export default function AdvancedSearch({ buildings, filterChanged }) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
-    const [buildings, setBuildings] = useState([]);
+    const [building, setBuilding] = React.useState('');
 
     const handleOpen = () => {
         setOpen(true);
     };
 
+    const acceptClose = () => {
+        setOpen(false);
+        if (building.length !== 0)
+            filterChanged(building)
+    };
+
     const handleClose = () => {
         setOpen(false);
     };
-
-    const handleChange = (e) => {
-        filterChanged(e.target.innerHTML);
-    }
-
-    useEffect(() => {
-        const fetchBuildings = () => {
-            // const res = await axios.get('https://jsonplaceholder.typicode.com/posts');
-            setBuildings([
-                'A-Block',
-                'B-Block',
-                'New Building',
-            ]);
-        }
-
-        fetchBuildings();
-    }, []);
 
     return (
         <div>
@@ -64,21 +59,25 @@ export default function AdvancedSearch({ filterChanged }) {
                     <DialogContentText>
                         Select Building ID (bID) and press Enter...
                     </DialogContentText>
-                    <Autocomplete
-                        id="combo-box-locations"
-                        size="small"
-                        options={buildings}
-                        getOptionLabel={option => option}
-                        style={{ width: 300 }}
-                        onChange={handleChange}
-                        renderInput={(params) => <TextField {...params} label="Select Building" variant="outlined" />}
-                    />
+                    <FormControl className={classes.formControl}>
+                        <InputLabel id="building-simple-select-label">Building</InputLabel>
+                        <Select
+                            labelId="building-simple-select-label"
+                            id="building-simple-select"
+                            value={building}
+                            onChange={(e) => setBuilding(e.target.value)}
+                        >
+                            {buildings.map(b => (
+                                <MenuItem key={b.id} value={b.bID}>{b.bID}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={handleClose} color="primary">
+                    <Button onClick={acceptClose} color="primary">
                         OK
                     </Button>
                 </DialogActions>

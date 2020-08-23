@@ -12,7 +12,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Card from '@material-ui/core/Card';
-import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
 
 import { channels } from '../../../shared/constants';
 const { ipcRenderer } = window.require('electron');
@@ -50,16 +50,14 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-export default function AddLocation({ locationsUpdated, buildings, fetchBuildings }) {
+export default function EditLocation({ buildings, selected, locationsUpdated, rid, type, bid, cap, lid }) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
-    const [newBuilding, setNewBuilding] = React.useState('');
     const [newRoomID, setNewRoomID] = React.useState('');
     const [roomType, setRoomType] = React.useState('');
     const [buildingID, setBuildingID] = React.useState('');
     const [capacity, setCapacity] = React.useState(0);
-    const [buildingAddSuccess, setBuildingAddSuccess] = React.useState({ type: 'info', msg: 'Enter Building ID' });
-    const [roomAddSuccess, setRoomAddSuccess] = React.useState({ type: 'info', msg: 'Enter Room Info.' });
+    const [roomEditSuccess, setRoomEditSuccess] = React.useState({ type: 'info', msg: 'Enter Room Info.' });
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -67,45 +65,25 @@ export default function AddLocation({ locationsUpdated, buildings, fetchBuilding
 
     const handleClose = () => {
         setOpen(false);
-        setBuildingAddSuccess({ type: 'info', msg: 'Enter Building ID' });
-        setRoomAddSuccess({ type: 'info', msg: 'Enter Room Info.' });
+        setRoomEditSuccess({ type: 'info', msg: 'Enter Room Info.' });
     };
 
-    const handleAddBuilding = async () => {
-        if (newBuilding.length === 0)
-            setBuildingAddSuccess({ type: 'warning', msg: 'Building ID not entered' });
-        else {
-            ipcRenderer.send(channels.ADD_BUILDING, { newBuilding });
-            await ipcRenderer.on(channels.ADD_BUILDING, (event, arg) => {
-                ipcRenderer.removeAllListeners(channels.ADD_BUILDING);
-                const { success } = arg;
-                if (success) {
-                    setBuildingAddSuccess({ type: 'success', msg: `Building added: ${newBuilding}` });
-                    fetchBuildings();
-                    setNewBuilding('');
-                }
-                else
-                    setBuildingAddSuccess({ type: 'error', msg: 'Building not added' });
-            })
-        }
-    }
-
-    const handleAddRoom = async () => {
+    const handleEditRoom = async () => {
         if (newRoomID.length === 0)
-            setRoomAddSuccess({ type: 'warning', msg: 'Room ID not entered' });
+            setRoomEditSuccess({ type: 'warning', msg: 'Room ID not entered' });
         else if (roomType.length === 0)
-            setRoomAddSuccess({ type: 'warning', msg: 'Type not selected' });
+            setRoomEditSuccess({ type: 'warning', msg: 'Type not selected' });
         else if (buildingID.length === 0)
-            setRoomAddSuccess({ type: 'warning', msg: 'Building not selected' });
+            setRoomEditSuccess({ type: 'warning', msg: 'Building not selected' });
         else if (capacity === 0)
-            setRoomAddSuccess({ type: 'warning', msg: 'Capacity not entered' });
+            setRoomEditSuccess({ type: 'warning', msg: 'Capacity not entered' });
         else {
-            ipcRenderer.send(channels.ADD_ROOM, { newRoomID, roomType, buildingID, capacity });
-            await ipcRenderer.on(channels.ADD_ROOM, (event, arg) => {
-                ipcRenderer.removeAllListeners(channels.ADD_ROOM);
+            ipcRenderer.send(channels.EDIT_ROOM, { newRoomID, roomType, buildingID, capacity, lid });
+            await ipcRenderer.on(channels.EDIT_ROOM, (event, arg) => {
+                ipcRenderer.removeAllListeners(channels.EDIT_ROOM);
                 const { success } = arg;
                 if (success) {
-                    setRoomAddSuccess({ type: 'success', msg: `Location added: ${newRoomID}` });
+                    setRoomEditSuccess({ type: 'success', msg: 'Location editted.' });
                     setNewRoomID('');
                     setRoomType('');
                     setBuildingID('');
@@ -114,7 +92,7 @@ export default function AddLocation({ locationsUpdated, buildings, fetchBuilding
                     locationsUpdated();
                 }
                 else
-                    setRoomAddSuccess({ type: 'error', msg: 'Room not added' });
+                    setRoomEditSuccess({ type: 'error', msg: 'Location not editted' });
             })
         }
     }
@@ -125,43 +103,17 @@ export default function AddLocation({ locationsUpdated, buildings, fetchBuilding
                 size="medium"
                 color="primary"
                 component="span"
+                disabled={selected === ''}
                 onClick={handleClickOpen}
             >
-                <AddIcon />
+                <EditIcon />
             </IconButton>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Add Location</DialogTitle>
+                <DialogTitle id="form-dialog-title">Edit Location</DialogTitle>
                 <DialogContent className={classes.row}>
                     <Card className={classes.sides} variant="outlined">
                         <DialogContentText>
-                            Add Building
-                        </DialogContentText>
-                        <TextField
-                            margin="dense"
-                            id="buildingID"
-                            label="Building ID"
-                            type="text"
-                            value={newBuilding}
-                            onChange={(e) => setNewBuilding(e.target.value)}
-                            className={classes.myInput}
-                            fullWidth
-                        />
-                        <Button
-                            size="small"
-                            variant="outlined"
-                            onClick={handleAddBuilding}
-                        >
-                            ADD
-                        </Button>
-                        <div className={classes.myAlert}>
-                            <Alert severity={buildingAddSuccess.type}>
-                                {buildingAddSuccess.msg}
-                            </Alert>
-                        </div>
-                    </Card>
-                    <Card className={classes.sides} variant="outlined">
-                        <DialogContentText>
-                            Add Room
+                            Edit Room
                         </DialogContentText>
                         <div className={classes.myRowInputs}>
                             <div className={classes.myRowInput}>
@@ -173,6 +125,7 @@ export default function AddLocation({ locationsUpdated, buildings, fetchBuilding
                                     value={newRoomID}
                                     onChange={(e) => setNewRoomID(e.target.value)}
                                 />
+                                <Typography variant="caption" component="h3">{rid}</Typography>
                             </div>
                             <div className={classes.myRowInput}>
                                 <InputLabel id="roomType-simple-select-label" className={classes.myRowInput}>
@@ -190,6 +143,7 @@ export default function AddLocation({ locationsUpdated, buildings, fetchBuilding
                                     <MenuItem value='Lecture Hall'>Lecture Hall</MenuItem>
                                     <MenuItem value='Laboratory'>Laboratory</MenuItem>
                                 </Select>
+                                <Typography variant="caption" component="h3">{type}</Typography>
                             </div>
                         </div>
                         <div className={classes.myInput}>
@@ -209,6 +163,7 @@ export default function AddLocation({ locationsUpdated, buildings, fetchBuilding
                                     <MenuItem key={b.id} value={b.bID}>{b.bID}</MenuItem>
                                 ))}
                             </Select>
+                            <Typography variant="caption" component="h3">{bid}</Typography>
                         </div>
                         <TextField
                             margin="dense"
@@ -220,16 +175,17 @@ export default function AddLocation({ locationsUpdated, buildings, fetchBuilding
                             className={classes.myInput}
                             fullWidth
                         />
+                        <Typography variant="caption" component="h3">{cap}</Typography>
                         <Button
                             size="small"
                             variant="outlined"
-                            onClick={handleAddRoom}
+                            onClick={handleEditRoom}
                         >
-                            ADD
+                            EDIT
                         </Button>
                         <div className={classes.myAlert}>
-                            <Alert severity={roomAddSuccess.type}>
-                                {roomAddSuccess.msg}
+                            <Alert severity={roomEditSuccess.type}>
+                                {roomEditSuccess.msg}
                             </Alert>
                         </div>
                     </Card>

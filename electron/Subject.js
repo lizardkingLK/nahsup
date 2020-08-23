@@ -1,20 +1,36 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const RoomSchema = new Schema({
-    rID: {
+const SubjectSchema = new Schema({
+    subCode: {
         type: String,
         required: true
     },
-    rType: {
+    year: {
         type: String,
         required: true
     },
-    bID: {
+    sem: {
         type: String,
         required: true
     },
-    capacity: {
+    name: {
+        type: String,
+        required: true
+    },
+    lecHrs: {
+        type: Number,
+        required: true
+    },
+    tuteHrs: {
+        type: Number,
+        required: true
+    },
+    labHrs: {
+        type: Number,
+        required: true
+    },
+    evalHrs: {
         type: Number,
         required: true
     },
@@ -28,6 +44,4 @@ const RoomSchema = new Schema({
     }
 });
 
-RoomSchema.index({ rID: "text" })
-
-module.exports = Room = mongoose.model('room', RoomSchema)
+module.exports = Subject = mongoose.model('subject', SubjectSchema)

@@ -28,6 +28,47 @@ const LocationDao = {
     // LOAD ROOMS
     loadRooms: (callback) => {
         Room.find().lean().then(rs => callback(rs))
+    },
+    // SEARCH ROOMS
+    searchRooms: (keyword, callback) => {
+        Room.find({ $text: { $search: keyword } })
+            .then(rs => {
+                if (rs)
+                    callback(rs)
+                else
+                    callback([])
+            })
+    },
+    // DELETE ROOM
+    deleteRoom: (id, callback) => {
+        Room.findById(id)
+            .then(r => {
+                Room.deleteOne(r)
+                    .then(() => {
+                        callback({ success: true })
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        callback({ success: false })
+                    })
+            });
+    },
+    // EDIT ROOM
+    editRoom: (newRoomID, roomType, buildingID, capacity, lid, callback) => {
+        Room.findOneAndUpdate({ _id: lid }, {
+            $set: {
+                rID: newRoomID,
+                rType: roomType,
+                bID: buildingID,
+                capacity: capacity
+            }
+        }, { useFindAndModify: false })
+            .then(() => {
+                callback({ success: true })
+            }).catch(err => {
+                console.error(err);
+                callback({ success: false })
+            })
     }
 }
 
