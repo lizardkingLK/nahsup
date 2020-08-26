@@ -16,6 +16,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 
+import Welcome from '../welcome/Welcome';
 import Lecturers from '../lecturers/Lecturers';
 import Locations from '../locations/Locations';
 import Sessions from '../sessions/Sessions';
@@ -222,19 +223,23 @@ export default function MiniDrawer() {
                     {label}
                 </Typography>
                 <div>
-                    {tabs.map((t, i) => {
-                        if (t.label === label)
-                            return (
-                                <div key={i}>
-                                    <t.component />
-                                </div>
-                            )
-                        else
-                            return null
-                    })}
+                    {!label ?
+                        <Welcome /> :
+                        <>
+                            {tabs.map((t, i) => {
+                                if (t.label === label)
+                                    return (
+                                        <div key={i}>
+                                            <t.component />
+                                        </div>
+                                    )
+                                else
+                                    return null
+                            })}
+                        </>
+                    }
                 </div>
             </main>
-
         </div>
     );
 }
