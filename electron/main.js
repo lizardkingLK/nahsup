@@ -43,7 +43,12 @@ function createWindow() {
         {
             label: 'Menu',
             submenu: [
-                { label: 'Refresh' },
+                {
+                    label: 'Refresh',
+                    click() {
+                        win.reload()
+                    }
+                },
                 { type: 'separator' },
                 {
                     label: 'Exit',

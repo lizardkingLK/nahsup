@@ -1,6 +1,7 @@
 import React from 'react';
 import { CSSTransition } from 'react-transition-group';
-import Body from './components/body/Body';
+import Body from './components/app_body/Body';
+import Backdrop from './components/app_backdrop/Backdrop';
 
 import { channels } from '../shared/constants';
 const { ipcRenderer } = window.require('electron');
@@ -27,7 +28,7 @@ class App extends React.Component {
 
   render() {
     const { appName, appVersion, appConnection } = this.state;
-    console.log(`${appName} ${appVersion} ${appConnection}`)
+    console.log(`${appName} ${appVersion}`)
 
     return (
       <CSSTransition
@@ -37,7 +38,10 @@ class App extends React.Component {
         classNames='fade'
       >
         <>
-          <Body />
+          {appConnection ?
+            <Body /> :
+            <Backdrop />
+          }
         </>
       </CSSTransition>
     );
