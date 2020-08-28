@@ -12,5 +12,12 @@ module.exports = {
         EDIT_SUBJECT: 'edit_subject',
         DELETE_SUBJECT: 'delete_subject',
         ADD_SUBJECT: 'add_subject',
+		
+		//supuni's
+        ADD_SCHEDULE: 'add_schedule',
+        EDIT_SCHEDULE: 'edit_schedule',
+        DELETE_SCHEDULE: 'delete_schedule',
+        LOAD_SCHEDULE: 'load_schedule',
+        SEARCH_SCHEDULE: 'search_schedule',
     },
 };

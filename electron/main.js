@@ -6,6 +6,7 @@ const url = require('url')
 const connection = require('./connection')
 const LocationDao = require('./LocationDao')
 const SubjectDao = require('./SubjectDao')
+const ScheduleDao = require('./ScheduleDao')
 
 let win
 
@@ -251,4 +252,72 @@ ipcMain.on(channels.ADD_SUBJECT, async (event, arg) => {
                     success: false
                 })
         })
+})
+
+//Schedule (Supuni's)
+
+ipcMain.on(channels.ADD_SCHEDULE, async (event, arg) => {
+    const { dayCount, workingDays, hrs, mins, duration } = arg
+    await ScheduleDao.addSchedule(dayCount, workingDays, hrs, mins, duration, function (r) {
+        if (r)
+            event.sender.send(channels.ADD_SCHEDULE, {
+                success: true
+            })
+        else
+            event.sender.send(channels.ADD_SCHEDULE, {
+                success: false
+            })
+    })
+})
+
+ipcMain.on(channels.LOAD_SCHEDULE, async (event) => {
+    await ScheduleDao.loadSchedules(function (sh) {
+        const shArray = sh.map(r => {
+            const dayCount = r.working_days_count
+            const workingDays = r.working_days
+            const hrs = r.working_time_hrs
+            const mins = r.Working_time_mins
+            const duration = r.Working_duration
+            const _id = r._id.toString()
+
+            return ({ _id, dayCount, workingDays, hrs, mins, duration })
+        })
+        event.sender.send(channels.LOAD_SCHEDULE, shArray)
+    })
+})
+
+ipcMain.on(channels.SEARCH_SCHEDULE, async (event, arg) => {
+    const { keyword } = arg
+    await ScheduleDao.searchSchedules(keyword, function (sh) {
+        const shArray = sh.map(r => {
+            const dayCount = r.working_days_count
+            const workingDays = r.Working_days
+            const hrs = r.working_time_hrs
+            const mins = r.Working_time_mins
+            const duration = r.Working_duration
+            const _id = r._id.toString()
+            return ({ _id, dayCount, workingDays, hrs, mins, duration })
+        })
+        event.sender.send(channels.SEARCH_ROOMS, shArray)
+    })
+})
+
+ipcMain.on(channels.DELETE_SCHEDULE, async (event, arg) => {
+    const { selected } = arg
+    await ScheduleDao.deleteSchedule(selected, function (sh) {
+        const { success } = sh
+        event.sender.send(channels.DELETE_SCHEDULE, {
+            success: success
+        })
+    })
+})
+
+ipcMain.on(channels.EDIT_SCHEDULE, async (event, arg) => {
+    const { _id, edayCount, eworkingDays, ehrs, emins, eduration } = arg
+    await ScheduleDao.editSchedule(_id, edayCount, eworkingDays, ehrs, emins, eduration, function (sh) {
+        const { success } = sh
+        event.sender.send(channels.EDIT_SCHEDULE, {
+            success: success
+        })
+    })
 })
