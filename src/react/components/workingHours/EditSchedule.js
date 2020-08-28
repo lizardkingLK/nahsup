@@ -49,7 +49,8 @@ const useStyles = makeStyles((theme) => ({
         paddingBottom: theme.spacing(1),
     },
     myRightAlign: {
-        textAlign: 'center'
+        textAlign: 'right',
+        marginRight: theme.spacing(2),
     }
 }))
 
