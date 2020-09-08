@@ -1,22 +1,25 @@
 const Schedule = require('./Schedule')
 
+
 const ScheduleDao = {
+    
     // ADD SCHEDULE
-    addSchedule: (dayCount, workingDays, hrs, mins, duration, callback) => {
+    addSchedule: (dayCount, workingDays,stime, duration,wtime,callback ) => {
         const newSchedule = new Schedule({
             working_days_count: dayCount,
             working_days: workingDays,
-            working_time_hrs: hrs,
-            Working_time_mins: mins,
+            Working_time: wtime,
+            starting_time:stime,
             Working_duration: duration
         })
-        newSchedule.save().then(r => callback(r)).catch(err => {
-            console.error(err);
-            callback({ success: false })
-        })
-
+      
+            newSchedule.save().then(r => callback(r)).catch(err => {
+                console.error(err);
+                callback({ success: false })
+            })
+        
     },
-    // LOAD ROOMS
+    // LOAD SCHEDULES
     loadSchedules: (callback) => {
         Schedule.find().lean().then(rs => callback(rs))
     },
@@ -45,13 +48,13 @@ const ScheduleDao = {
             });
     },
     // EDIT SCHEDULE
-    editSchedule: (_id, edayCount, eworkingDays, ehrs, emins, eduration, callback) => {
-        Schedule.findOneAndUpdate({ _id: _id }, {
+    editSchedule: (_id,edayCount, eworkingDays,estime, eduration,ewtime,callback ) => {
+        Schedule.findOneAndUpdate({ _id: _id}, {
             $set: {
                 working_days_count: edayCount,
                 working_days: eworkingDays,
-                working_time_hrs: ehrs,
-                Working_time_mins: emins,
+                starting_time: estime,
+                Working_time: ewtime,
                 Working_duration: eduration
             }
         }, { useFindAndModify: false })

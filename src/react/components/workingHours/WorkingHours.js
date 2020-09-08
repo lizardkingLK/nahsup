@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect,useRef } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import { IconButton } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -31,8 +31,8 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-const createData = (_id, dayCount,workingDays,hrs,mins,duration) => {
-    return { _id, dayCount,workingDays,hrs,mins,duration};
+const createData = (_id, dayCount,workingDays,stime,duration,wtime) => {
+    return { _id, dayCount,workingDays,stime,duration,wtime};
 }
 
 const WorkingHours = () => {
@@ -43,7 +43,7 @@ const WorkingHours = () => {
     const [schedulesPerPage] = useState(3);
     const [selected, setSelected] = useState('');
     const [editable, setEditable] = useState('');
-
+    const childRef = useRef();
     // get current Schedules
     const indexOfLastSchedule = currentPage * schedulesPerPage;
     const indexOfFirstSchedule = indexOfLastSchedule - schedulesPerPage;
@@ -61,10 +61,11 @@ const WorkingHours = () => {
         ipcRenderer.on(channels.LOAD_SCHEDULE, (event, arg) => {
             ipcRenderer.removeAllListeners(channels.LOAD_SCHEDULE);
             const sh = arg;
-            const shArray = sh.map(s => createData(s._id, s.dayCount,s.workingDays,s.hrs,s.mins,s.duration))
+            const shArray = sh.map(s => createData(s._id, s.dayCount,s.workingDays,s.stime,s.duration,s.wtime))
             setSchedules(shArray);
         });
         setLoading(false);
+        childRef.current.resetSelected();
     }
 
    
@@ -85,9 +86,8 @@ const WorkingHours = () => {
         setSelected(value);
         let tSchedules = schedules;
         const edit = tSchedules.filter(l => (l._id === value))[0];
-        setEditable(edit); 
+        setEditable(edit);
     }
-
 
 
     return (
@@ -108,6 +108,7 @@ const WorkingHours = () => {
                     schedules={currentSchedules}
                     loading={loading}
                     handleRadioChange={handleRadioChange}
+                    ref={childRef}
                 />
             </div>
 
@@ -126,9 +127,10 @@ const WorkingHours = () => {
                     _id={editable._id}
                     dayCount={editable.dayCount}
                     workingDays={editable.workingDays}
-                    hrs={editable.hrs}
-                    mins={editable.mins}
-                    duration={editable.duration} 
+                    stime={editable.stime}
+                    duration={editable.duration}
+                    wtime={editable.wtime}
+                    setSelected={setSelected}
                 />
                 <DeleteSchedule
                     selected={selected}

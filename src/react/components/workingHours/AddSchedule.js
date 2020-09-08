@@ -5,7 +5,6 @@ import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -13,6 +12,8 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Card from '@material-ui/core/Card';
 import AddIcon from '@material-ui/icons/Add';
+import { KeyboardTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import DateFnsUtils from '@date-io/date-fns';
 
 import { channels } from '../../../shared/constants';
 const { ipcRenderer } = window.require('electron');
@@ -47,10 +48,6 @@ const useStyles = makeStyles((theme) => ({
     myAlert: {
         paddingTop: theme.spacing(1),
         paddingBottom: theme.spacing(1),
-    },
-    myRightAlign: {
-        textAlign: 'right',
-        marginRight: theme.spacing(2),
     }
 }))
 
@@ -59,12 +56,11 @@ export default function AddSchedule({ scheduleUpdated }) {
     const [open, setOpen] = React.useState(false);
     const [dayCount, setdayCount] = React.useState(0);
     const [wdays, setWdays] = React.useState([]);
-    const [hrs, setHrs] = React.useState(0);
-    const [mins, setMins] = React.useState(0);
     const [duration, setDuration] = React.useState('One Hour');
     const [scheduleAddSuccess, setScheduleAddSuccess] = React.useState({ type: 'info', msg: 'Enter Relavant Details.' });
     const [dayArr, setDayArr] = React.useState(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]);
-
+    const [stime, setStime] = React.useState(new Date());
+    const [wtime, setWtime] = React.useState("2018-01-01T18:30:00.000Z");
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -76,6 +72,8 @@ export default function AddSchedule({ scheduleUpdated }) {
 
     //Onclick add
     const handleAddSchedule = async () => {
+        var workHrs = new Date(wtime).getHours();
+        var workMins = new Date(wtime).getMinutes();
         //Taking array to a string
         var workingDays = "";
         wdays.forEach(ele => {
@@ -88,22 +86,26 @@ export default function AddSchedule({ scheduleUpdated }) {
         //validations
         if (dayCount === 0)
             setScheduleAddSuccess({ type: 'warning', msg: 'Please select at least one working day!' });
-        else if (hrs === 0 && mins === 0)
-            setScheduleAddSuccess({ type: 'warning', msg: 'Invalid working time per day!' });
+        else if (workHrs >= 14)
+            setScheduleAddSuccess({ type: 'warning', msg: 'Working time must be less than 14:00 Hrs' });
+        else if (workHrs === 0 && workMins === 0)
+            setScheduleAddSuccess({ type: 'warning', msg: 'Please select Working time' });
+        else if (workHrs < 2)
+            setScheduleAddSuccess({ type: 'warning', msg: 'Working time is too small' });
         else {
             //Save to database
-            ipcRenderer.send(channels.ADD_SCHEDULE, { dayCount, workingDays, hrs, mins, duration });
+            ipcRenderer.send(channels.ADD_SCHEDULE, { dayCount, workingDays, stime, duration, wtime });
             await ipcRenderer.on(channels.ADD_SCHEDULE, (event, arg) => {
                 ipcRenderer.removeAllListeners(channels.ADD_SCHEDULE);
                 const { success } = arg;
                 if (success) {
                     setScheduleAddSuccess({ type: 'success', msg: `Schedule added!` });
-                    setHrs(0);
-                    setMins(0);
                     setdayCount(0);
-                    setDuration('');
+                    setDuration("One Hour");
                     scheduleUpdated();
                     setWdays([]);
+                    setStime("2018-01-01T18:30:00.000Z");
+                    setWtime("2018-01-01T18:30:00.000Z");
                     //Uncheck checkBoxes after edit
                     setDayArr([]);
                     setDayArr(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]);
@@ -149,6 +151,7 @@ export default function AddSchedule({ scheduleUpdated }) {
         }
     }
     return (
+
         <div>
             <IconButton
                 size="medium"
@@ -162,13 +165,10 @@ export default function AddSchedule({ scheduleUpdated }) {
                 <DialogTitle id="form-dialog-title">Add Schedule</DialogTitle>
                 <DialogContent className={classes.row}>
                     <Card className={classes.sides} variant="outlined">
-                        <DialogContentText>
-                            Add a Schedule
-                        </DialogContentText>
                         <TextField
                             margin="dense"
                             id="capacity"
-                            label="Number of Working days"
+                            label="Number of Working days(Selected Automatically)"
                             type="text"
                             name="dayCount"
                             value={dayCount}
@@ -177,67 +177,42 @@ export default function AddSchedule({ scheduleUpdated }) {
                             className={classes.myInput}
                             fullWidth
                         />
-                        <InputLabel id="roomType-simple-select-label" >
-                            <Typography variant="caption" component="h6">
-                                Working time per day(Including lunch)
-                                    </Typography>
+                        <div className={classes.myInput}>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                <KeyboardTimePicker
+                                    label="Start Time"
+                                    placeholder="08:00 AM"
+                                    mask="__:__ _M"
+                                    value={stime}
+                                    onChange={date => setStime(date)}
+                                    fullWidth
 
-                        </InputLabel>
-                        <div className={classes.myRowInputs}>
-                            <div className={classes.myRowInput}>
-                                <InputLabel id="roomType-simple-select-label" className={classes.myRowInput}>
-                                    <Typography variant="caption" component="h6">
-                                        Hrs
-                                    </Typography>
-                                </InputLabel>
+                                />
 
-                                <Select
-                                    labelId="roomType-simple-select-label"
-                                    id="roomType-simple-select"
-                                    value={hrs}
-                                    className={classes.myRowInput}
-                                    onChange={(e) => setHrs(e.target.value)}
-                                >
-                                    <MenuItem value='0'>0</MenuItem>
-                                    <MenuItem value='1'>1</MenuItem>
-                                    <MenuItem value='2'>2</MenuItem>
-                                    <MenuItem value='3'>3</MenuItem>
-                                    <MenuItem value='4'>4</MenuItem>
-                                    <MenuItem value='5'>5</MenuItem>
-                                    <MenuItem value='6'>6</MenuItem>
-                                    <MenuItem value='7'>7</MenuItem>
-                                    <MenuItem value='8'>8</MenuItem>
-                                    <MenuItem value='9'>9</MenuItem>
-                                    <MenuItem value='10'>10</MenuItem>
-                                    <MenuItem value='11'>11</MenuItem>
-                                    <MenuItem value='12'>12</MenuItem>
-                                    <MenuItem value='13'>13</MenuItem>
-                                    <MenuItem value='14'>14</MenuItem>
-                                </Select>
-                            </div>
-                            <div className={classes.myRowInput}>
-                                <InputLabel id="roomType-simple-select-label" className={classes.myRowInput}>
-                                    <Typography variant="caption" component="h6">
-                                        Mins
-                                    </Typography>
-                                </InputLabel>
-                                <Select
-                                    labelId="roomType-simple-select-label"
-                                    id="roomType-simple-select"
-                                    value={mins}
-                                    className={classes.myRowInput}
-                                    defaultValue="00"
-                                    onChange={(e) => setMins(e.target.value)}
-                                >
-                                    <MenuItem value={0}>00</MenuItem>
-                                    <MenuItem value={10}>10</MenuItem>
-                                    <MenuItem value='20'>20</MenuItem>
-                                    <MenuItem value='30'>30</MenuItem>
-                                    <MenuItem value='40'>40</MenuItem>
-                                    <MenuItem value='50'>50</MenuItem>
-                                </Select>
-                            </div>
+                            </MuiPickersUtilsProvider>
                         </div>
+                        <div className={classes.myInput}>
+                            <InputLabel id="building-simple-select-label">
+                                <Typography variant="caption" component="h6">
+                                    Working time per day(With Lunch)
+                                </Typography>
+                            </InputLabel>
+
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                <KeyboardTimePicker
+                                    ampm={false}
+                                    placeholder="00:00"
+                                    format="HH:mm"
+                                    mask="__:__"
+                                    openTo={"hours"}
+                                    value={wtime}
+                                    onChange={date => setWtime(date)}
+                                    fullWidth
+                                />
+                            </MuiPickersUtilsProvider>
+
+                        </div>
+
                         <div className={classes.myInput}>
                             <InputLabel id="building-simple-select-label">
                                 <Typography variant="caption" component="h6">
@@ -250,6 +225,7 @@ export default function AddSchedule({ scheduleUpdated }) {
                                 className={classes.myInput}
                                 value={duration}
                                 onChange={(e) => setDuration(e.target.value)}
+                                fullWidth
                             >
                                 <MenuItem value='One Hour'>One Hour</MenuItem>
                                 <MenuItem value='Thirty mins'>Thirty mins</MenuItem>
@@ -264,15 +240,13 @@ export default function AddSchedule({ scheduleUpdated }) {
                         {daysOptions}
                     </Card>
                 </DialogContent>
-                <div className={classes.myRightAlign}>
-                    <Button
-                        size="small"
-                        variant="outlined"
-                        onClick={handleAddSchedule}
-                    >
-                        ADD
-                    </Button>
-                </div>
+                <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={handleAddSchedule}
+                >
+                    ADD
+                </Button>
                 <div className={classes.myAlert}>
                     <Alert severity={scheduleAddSuccess.type}>
                         {scheduleAddSuccess.msg}

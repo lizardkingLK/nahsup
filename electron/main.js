@@ -257,8 +257,8 @@ ipcMain.on(channels.ADD_SUBJECT, async (event, arg) => {
 //Schedule (Supuni's)
 
 ipcMain.on(channels.ADD_SCHEDULE, async (event, arg) => {
-    const { dayCount, workingDays, hrs, mins, duration } = arg
-    await ScheduleDao.addSchedule(dayCount, workingDays, hrs, mins, duration, function (r) {
+    const { dayCount, workingDays,stime, duration,wtime } = arg
+    await ScheduleDao.addSchedule(dayCount, workingDays,stime, duration,wtime , function (r) {
         if (r)
             event.sender.send(channels.ADD_SCHEDULE, {
                 success: true
@@ -275,12 +275,12 @@ ipcMain.on(channels.LOAD_SCHEDULE, async (event) => {
         const shArray = sh.map(r => {
             const dayCount = r.working_days_count
             const workingDays = r.working_days
-            const hrs = r.working_time_hrs
-            const mins = r.Working_time_mins
+            const stime = r.starting_time
             const duration = r.Working_duration
+            const wtime = r.Working_time
             const _id = r._id.toString()
-
-            return ({ _id, dayCount, workingDays, hrs, mins, duration })
+           
+            return ({_id, dayCount, workingDays,stime, duration,wtime })
         })
         event.sender.send(channels.LOAD_SCHEDULE, shArray)
     })
@@ -296,7 +296,7 @@ ipcMain.on(channels.SEARCH_SCHEDULE, async (event, arg) => {
             const mins = r.Working_time_mins
             const duration = r.Working_duration
             const _id = r._id.toString()
-            return ({ _id, dayCount, workingDays, hrs, mins, duration })
+            return ({ _id, dayCount, workingDays,hrs,mins, duration })
         })
         event.sender.send(channels.SEARCH_ROOMS, shArray)
     })
@@ -313,8 +313,8 @@ ipcMain.on(channels.DELETE_SCHEDULE, async (event, arg) => {
 })
 
 ipcMain.on(channels.EDIT_SCHEDULE, async (event, arg) => {
-    const { _id, edayCount, eworkingDays, ehrs, emins, eduration } = arg
-    await ScheduleDao.editSchedule(_id, edayCount, eworkingDays, ehrs, emins, eduration, function (sh) {
+    const { _id, edayCount, eworkingDays,estime, eduration,ewtime } = arg
+    await ScheduleDao.editSchedule(_id, edayCount, eworkingDays,estime, eduration,ewtime, function (sh) {
         const { success } = sh
         event.sender.send(channels.EDIT_SCHEDULE, {
             success: success
