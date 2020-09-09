@@ -1,9 +1,10 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, Typography } from '@material-ui/core';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const useStyles = makeStyles((theme) => ({
     row: {
@@ -11,61 +12,86 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        margin: theme.spacing(1),
-    },
-    card: {
         padding: theme.spacing(1),
-        margin: theme.spacing(1),
-        minHeight: 450,
-        minWidth: 300,
     },
-    image: {
-        height: 300,
-        width: 250,
-    }
-}))
+    root: {
+        width: '100%',
+    },
+    heading: {
+        fontSize: theme.typography.pxToRem(15),
+        fontWeight: theme.typography.fontWeightRegular,
+    },
+}));
 
-const Statistics = () => {
+const tabs = [
+    {
+        label: 'Lecturers',
+        imgPath:
+            require('../../images/lecturers.svg'),
+    },
+    {
+        label: 'Locations',
+        imgPath:
+            require('../../images/locations.svg'),
+    },
+    {
+        label: 'Statistics',
+        imgPath:
+            require('../../images/statistics.svg'),
+    },
+    {
+        label: 'Students',
+        imgPath:
+            require('../../images/students.svg'),
+    },
+    {
+        label: 'Subjects',
+        imgPath:
+            require('../../images/subjects.svg'),
+    },
+    {
+        label: 'Tags',
+        imgPath:
+            require('../../images/tags.svg'),
+    },
+    {
+        label: 'Working Hours',
+        imgPath:
+            require('../../images/working_hours.svg'),
+    },
+    {
+        label: 'Sessions',
+        imgPath:
+            require('../../images/sessions.svg'),
+    }
+]
+
+export default function SimpleAccordion() {
     const classes = useStyles();
+
     return (
         <div className={classes.row}>
-            <Card variant="outlined" className={classes.card}>
-                <CardContent>
-                    <img className={classes.image} src={require('../../images/lecturers.svg')} alt="lecturers" />
-                    <Typography color="primary" gutterBottom>
-                        Lecturers
-                    </Typography>
-                </CardContent>
-                <CardActions>
-                    <Button size="small">View</Button>
-                </CardActions>
-            </Card>
-
-            <Card variant="outlined" className={classes.card}>
-                <CardContent>
-                    <img className={classes.image} src={require('../../images/students.svg')} alt="students" />
-                    <Typography color="primary" gutterBottom>
-                        Students
-                    </Typography>
-                </CardContent>
-                <CardActions>
-                    <Button size="small">View</Button>
-                </CardActions>
-            </Card>
-
-            <Card variant="outlined" className={classes.card}>
-                <CardContent>
-                    <img className={classes.image} src={require('../../images/subjects.svg')} alt="subjects" />
-                    <Typography color="primary" gutterBottom>
-                        Subjects
-                    </Typography>
-                </CardContent>
-                <CardActions>
-                    <Button size="small">View</Button>
-                </CardActions>
-            </Card>
+            <div className={classes.root}>
+                {tabs.map(t => {
+                    return (
+                        <Accordion key={t.label}>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header"
+                            >
+                                <Typography className={classes.heading}>{t.label}</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Typography>
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
+                                    sit amet blandit leo lobortis eget.
+                                </Typography>
+                            </AccordionDetails>
+                        </Accordion>
+                    )
+                })}
+            </div>
         </div>
-    )
+    );
 }
-
-export default Statistics

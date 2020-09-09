@@ -115,37 +115,37 @@ export default function EditLocation({ buildings, selected, locationsUpdated, ri
                         <DialogContentText>
                             Edit Room
                         </DialogContentText>
-                        <div className={classes.myRowInputs}>
-                            <div className={classes.myRowInput}>
-                                <TextField
-                                    margin="dense"
-                                    id="roomID"
-                                    label="Room ID"
-                                    type="text"
-                                    value={newRoomID}
-                                    onChange={(e) => setNewRoomID(e.target.value)}
-                                />
-                                <Typography variant="caption" component="h3">{rid}</Typography>
-                            </div>
-                            <div className={classes.myRowInput}>
-                                <InputLabel id="roomType-simple-select-label" className={classes.myRowInput}>
-                                    <Typography variant="caption" component="h6">
-                                        Room Type
-                                    </Typography>
-                                </InputLabel>
-                                <Select
-                                    labelId="roomType-simple-select-label"
-                                    id="roomType-simple-select"
-                                    value={roomType}
-                                    className={classes.myRowInput}
-                                    onChange={(e) => setRoomType(e.target.value)}
-                                >
-                                    <MenuItem value='Lecture Hall'>Lecture Hall</MenuItem>
-                                    <MenuItem value='Laboratory'>Laboratory</MenuItem>
-                                </Select>
-                                <Typography variant="caption" component="h3">{type}</Typography>
-                            </div>
+
+                        <div className={classes.myRowInput}>
+                            <TextField
+                                margin="dense"
+                                id="roomID"
+                                label="Room ID"
+                                type="text"
+                                value={newRoomID}
+                                onChange={(e) => setNewRoomID(e.target.value)}
+                            />
+                            <Typography variant="caption" component="h3">{rid}</Typography>
                         </div>
+                        <div className={classes.myRowInput}>
+                            <InputLabel id="roomType-simple-select-label" className={classes.myRowInput}>
+                                <Typography variant="caption" component="h6">
+                                    Room Type
+                                    </Typography>
+                            </InputLabel>
+                            <Select
+                                labelId="roomType-simple-select-label"
+                                id="roomType-simple-select"
+                                value={roomType}
+                                className={classes.myRowInput}
+                                onChange={(e) => setRoomType(e.target.value)}
+                            >
+                                <MenuItem value='Lecture Hall'>Lecture Hall</MenuItem>
+                                <MenuItem value='Laboratory'>Laboratory</MenuItem>
+                            </Select>
+                            <Typography variant="caption" component="h3">{type}</Typography>
+                        </div>
+
                         <div className={classes.myInput}>
                             <InputLabel id="building-simple-select-label">
                                 <Typography variant="caption" component="h6">

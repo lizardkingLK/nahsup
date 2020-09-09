@@ -163,35 +163,35 @@ export default function AddLocation({ locationsUpdated, buildings, fetchBuilding
                         <DialogContentText>
                             Add Room
                         </DialogContentText>
-                        <div className={classes.myRowInputs}>
-                            <div className={classes.myRowInput}>
-                                <TextField
-                                    margin="dense"
-                                    id="roomID"
-                                    label="Room ID"
-                                    type="text"
-                                    value={newRoomID}
-                                    onChange={(e) => setNewRoomID(e.target.value)}
-                                />
-                            </div>
-                            <div className={classes.myRowInput}>
-                                <InputLabel id="roomType-simple-select-label" className={classes.myRowInput}>
-                                    <Typography variant="caption" component="h6">
-                                        Room Type
-                                    </Typography>
-                                </InputLabel>
-                                <Select
-                                    labelId="roomType-simple-select-label"
-                                    id="roomType-simple-select"
-                                    value={roomType}
-                                    className={classes.myRowInput}
-                                    onChange={(e) => setRoomType(e.target.value)}
-                                >
-                                    <MenuItem value='Lecture Hall'>Lecture Hall</MenuItem>
-                                    <MenuItem value='Laboratory'>Laboratory</MenuItem>
-                                </Select>
-                            </div>
+
+                        <div className={classes.myRowInput}>
+                            <TextField
+                                margin="dense"
+                                id="roomID"
+                                label="Room ID"
+                                type="text"
+                                value={newRoomID}
+                                onChange={(e) => setNewRoomID(e.target.value)}
+                            />
                         </div>
+                        <div className={classes.myRowInput}>
+                            <InputLabel id="roomType-simple-select-label" className={classes.myRowInput}>
+                                <Typography variant="caption" component="h6">
+                                    Room Type
+                                    </Typography>
+                            </InputLabel>
+                            <Select
+                                labelId="roomType-simple-select-label"
+                                id="roomType-simple-select"
+                                value={roomType}
+                                className={classes.myRowInput}
+                                onChange={(e) => setRoomType(e.target.value)}
+                            >
+                                <MenuItem value='Lecture Hall'>Lecture Hall</MenuItem>
+                                <MenuItem value='Laboratory'>Laboratory</MenuItem>
+                            </Select>
+                        </div>
+
                         <div className={classes.myInput}>
                             <InputLabel id="building-simple-select-label">
                                 <Typography variant="caption" component="h6">

@@ -8,7 +8,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Radio from '@material-ui/core/Radio';
-import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
     row: {
@@ -20,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
     },
     table: {
         minWidth: 650,
+        height: 340
     },
 }))
 
@@ -30,10 +30,6 @@ const LocationsTable = ({ locations, loading, handleRadioChange }) => {
     const handleChange = (e) => {
         setSelectedValue(e.target.value);
         handleRadioChange(e.target.value);
-    }
-
-    if (loading) {
-        return <Typography variant="caption" component="h3" >Loading Table...</Typography>
     }
 
     return (

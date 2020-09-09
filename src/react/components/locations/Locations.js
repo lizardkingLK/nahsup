@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react'
-import { CSSTransition } from 'react-transition-group';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, IconButton } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -137,111 +136,104 @@ const Locations = () => {
     }
 
     return (
-        <CSSTransition
-            in={true}
-            appear={true}
-            timeout={300}
-            classNames='fade'
-        >
-            <div className="locations">
-                <div className={classes.row}>
-                    <AdvancedSearch
-                        buildings={buildings}
-                        filterChanged={filterChanged}
-                    />
-                    <IconButton
-                        size="small"
-                        color="primary"
-                        component="span"
-                        onClick={fetchLocations}
-                    >
-                        <RefreshIcon />
-                    </IconButton>
-                    <form noValidate autoComplete="off" onSubmit={handleChange}>
-                        <div>
-                            <TextField
-                                id="search_location"
-                                size="small"
-                                label="Search Locations..."
-                                onChange={handleChange}
-                            />
-                        </div>
-                    </form>
-                </div>
-
-                <div className={classes.row}>
-                    <Table
-                        locations={currentLocations}
-                        loading={loading}
-                        handleRadioChange={handleRadioChange}
-                    />
-                </div>
-
-                <div className={classes.pagination}>
-                    <Pagination
-                        locationsPerPage={locationsPerPage}
-                        totalLocations={locations.length}
-                        paginate={paginate}
-                    />
-                </div>
-
-                <div className={classes.row}>
-                    <Button
-                        variant="contained"
-                        size="small"
-                        color="primary"
-                        className={classes.pref}
-                    >
-                        <Typography variant="caption" component="h3">
-                            Lecturer Preferences
-                    </Typography>
-                    </Button>
-                    <Button
-                        variant="contained"
-                        size="small"
-                        color="primary"
-                        className={classes.pref}
-                    >
-                        <Typography variant="caption" component="h3">
-                            Group Preferences
-                    </Typography>
-                    </Button>
-                    <Button
-                        variant="contained"
-                        size="small"
-                        color="primary"
-                        className={classes.pref}
-                    >
-                        <Typography variant="caption" component="h3">
-                            Session Preferences
-                    </Typography>
-                    </Button>
-                </div>
-
-                <div className={classes.row}>
-                    <EditLocation
-                        buildings={buildings}
-                        selected={selected}
-                        locationsUpdated={locationsUpdated}
-                        rid={editable.rID}
-                        type={editable.rType}
-                        bid={editable.bID}
-                        cap={editable.capacity}
-                        lid={editable.id}
-                    />
-                    <DeleteLocation
-                        selected={selected}
-                        locationsUpdated={locationsUpdated}
-                    />
-                    <AddLocation
-                        locationsUpdated={locationsUpdated}
-                        buildings={buildings}
-                        fetchBuildings={fetchBuildings}
-                    />
-                </div>
+        <div className="locations">
+            <div className={classes.row}>
+                <AdvancedSearch
+                    buildings={buildings}
+                    filterChanged={filterChanged}
+                />
+                <IconButton
+                    size="small"
+                    color="primary"
+                    component="span"
+                    onClick={fetchLocations}
+                >
+                    <RefreshIcon />
+                </IconButton>
+                <form noValidate autoComplete="off" onSubmit={handleChange}>
+                    <div>
+                        <TextField
+                            id="search_location"
+                            size="small"
+                            label="Search Locations..."
+                            onChange={handleChange}
+                        />
+                    </div>
+                </form>
             </div>
-        </CSSTransition>
+
+            <div className={classes.row}>
+                <Table
+                    locations={currentLocations}
+                    loading={loading}
+                    handleRadioChange={handleRadioChange}
+                />
+            </div>
+
+            <div className={classes.pagination}>
+                <Pagination
+                    locationsPerPage={locationsPerPage}
+                    totalLocations={locations.length}
+                    paginate={paginate}
+                />
+            </div>
+
+            <div className={classes.row}>
+                <Button
+                    variant="contained"
+                    size="small"
+                    color="primary"
+                    className={classes.pref}
+                >
+                    <Typography variant="caption" component="h3">
+                        Lecturer Preferences
+                </Typography>
+                </Button>
+                <Button
+                    variant="contained"
+                    size="small"
+                    color="primary"
+                    className={classes.pref}
+                >
+                    <Typography variant="caption" component="h3">
+                        Group Preferences
+                </Typography>
+                </Button>
+                <Button
+                    variant="contained"
+                    size="small"
+                    color="primary"
+                    className={classes.pref}
+                >
+                    <Typography variant="caption" component="h3">
+                        Session Preferences
+                </Typography>
+                </Button>
+            </div>
+
+            <div className={classes.row}>
+                <EditLocation
+                    buildings={buildings}
+                    selected={selected}
+                    locationsUpdated={locationsUpdated}
+                    rid={editable.rID}
+                    type={editable.rType}
+                    bid={editable.bID}
+                    cap={editable.capacity}
+                    lid={editable.id}
+                />
+                <DeleteLocation
+                    selected={selected}
+                    locationsUpdated={locationsUpdated}
+                />
+                <AddLocation
+                    locationsUpdated={locationsUpdated}
+                    buildings={buildings}
+                    fetchBuildings={fetchBuildings}
+                />
+            </div>
+        </div>
     )
 }
 
-export default Locations
+export default Locations;
