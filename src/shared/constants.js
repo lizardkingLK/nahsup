@@ -12,12 +12,34 @@ module.exports = {
         EDIT_SUBJECT: 'edit_subject',
         DELETE_SUBJECT: 'delete_subject',
         ADD_SUBJECT: 'add_subject',
-		
-		//supuni's
+
+        // supuni's
         ADD_SCHEDULE: 'add_schedule',
         EDIT_SCHEDULE: 'edit_schedule',
         DELETE_SCHEDULE: 'delete_schedule',
         LOAD_SCHEDULE: 'load_schedule',
         SEARCH_SCHEDULE: 'search_schedule',
+
+        // nimaya's
+        ADD_YEARSEM: 'add_yearsem',
+        LOAD_YEARSEMS: 'load_yearsem',
+        ADD_PROGRAMME: 'add_programme',
+        LOAD_PROGRAMMES: 'load_programmes',
+        ADD_GROUP: 'add_group',
+        LOAD_GROUPS: 'load_groups',
+        ADD_STUDENT: 'add_student',
+        LOAD_STUDENTS: 'load_students',
+        SEARCH_STUDENTS: 'search_students',
+        ADD_TAG: 'add_tag',
+        LOAD_TAGS: 'load_tags',
+        SEARCH_TAGS: 'search_tags',
+        EDIT_TAG: 'load_tags',
+        DELETE_TAG: 'search_tags',
+        EDIT_STUDENT: 'load_tags',
+        DELETE_STUDENT: 'search_tags',
+        ADD_GROUPID: 'add_groupid',
+        LOAD_GROUPID: 'load_groupid',
+        ADD_SUBGROUPID: 'add_subgroupid',
+        LOAD_SUBGROUPID: 'load_subgroupid',
     },
 };

@@ -1,13 +1,15 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, Typography } from '@material-ui/core';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
+import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     row: {
-        display: 'grid',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        textAlign: 'center',
+        height: '70vh',
     },
     card: {
         padding: theme.spacing(1),
@@ -19,7 +21,15 @@ const useStyles = makeStyles((theme) => ({
     image: {
         height: 400,
         width: 400,
-    }
+    },
+    title: {
+        color: 'var(--primaryAccent)',
+        fontFamily: 'Lato, sans-serif',
+    },
+    subTitle: {
+        color: 'var(--secondaryAccent)',
+        fontFamily: 'Lato, sans-serif',
+    },
 }));
 
 export default function Welcome() {
@@ -27,16 +37,12 @@ export default function Welcome() {
 
     return (
         <div className={classes.row}>
-            <Card variant="outlined" className={classes.card}>
-                <CardContent>
-                    <Typography color="primary" gutterBottom>
-                        Welcome
-                </Typography>
-                </CardContent>
-                <CardActions>
-                    <Button size="small">View</Button>
-                </CardActions>
-            </Card>
+            <Typography className={classes.title} variant="h2" gutterBottom>
+                Welcome
+            </Typography>
+            <Typography className={classes.subTitle} variant="h4" gutterBottom>
+                Time-Tables Admin
+            </Typography>
         </div>
     )
 }
