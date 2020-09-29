@@ -26,6 +26,14 @@ const StudentSchema = new Schema({
     dateCreated: {
         type: Date,
         default: Date.now
+    },
+    groupIdLabel: {
+        type: String,
+        default: null
+    },
+    subGroupIdLabel: {
+        type: String,
+        default: null
     }
 });
 

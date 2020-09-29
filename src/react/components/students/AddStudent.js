@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, IconButton, Typography } from '@material-ui/core';
+import { Button, IconButton } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -8,9 +8,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
 import Card from '@material-ui/core/Card';
 import AddIcon from '@material-ui/icons/Add';
 
@@ -68,6 +65,7 @@ export default function AddStudent({ studentsUpdated }) {
 
     const handleClose = () => {
         setOpen(false);
+        setStudentAddSuccess({ type: 'info', msg: `Enter Student Details` });
     };
 
     useEffect(function () {
@@ -86,7 +84,7 @@ export default function AddStudent({ studentsUpdated }) {
         else if (subGroupId.length === 0)
             setStudentAddSuccess({ type: 'warning', msg: 'Sub Group not entered' });
         else {
-            ipcRenderer.send(channels.ADD_STUDENT, { yearNo, semNo, programmeName, groupId, subGroupId, group });
+            ipcRenderer.send(channels.ADD_STUDENT, { yearNo, semNo, programmeName, groupId, subGroupId });
             await ipcRenderer.on(channels.ADD_STUDENT, (event, arg) => {
                 ipcRenderer.removeAllListeners(channels.ADD_STUDENT);
                 const { success } = arg;

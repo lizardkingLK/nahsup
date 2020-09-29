@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, IconButton } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 import Table from './Table';
 import Pagination from './Pagination';
@@ -11,6 +11,7 @@ import AdvancedSearch from './AdvancedSearch';
 import AddLocation from './AddLocation';
 import DeleteLocation from './DeleteLocation';
 import EditLocation from './EditLocation';
+import Preferences from './Preferences';
 
 import { channels } from '../../../shared/constants';
 const { ipcRenderer } = window.require('electron');
@@ -24,13 +25,18 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1),
     },
     table: {
-        marginTop: theme.spacing(2),
+        marginTop: theme.spacing(3),
         minWidth: 650,
     },
     pref: {
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(1),
         width: 200,
+    },
+    pagination: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     }
 }))
 
@@ -43,9 +49,9 @@ const Locations = () => {
     const [locations, setLocations] = useState([]);
     const [buildings, setBuildings] = useState([]);
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
-    const [locationsPerPage] = useState(3);
+    const [locationsPerPage] = useState(5);
     const [selected, setSelected] = useState('');
     const [editable, setEditable] = useState('');
 
@@ -84,8 +90,8 @@ const Locations = () => {
 
     // useeffect => runs when mounted and also when content gets updated
     useEffect(() => {
-        fetchLocations();
         fetchBuildings();
+        fetchLocations();
     }, []);
 
     // refresh table
@@ -99,7 +105,6 @@ const Locations = () => {
         let tLocations = locations;
         const edit = tLocations.filter(l => (l.id === value))[0];
         setEditable(edit);
-        console.log(edit)
     }
 
     // prompted building for advanced search
@@ -162,59 +167,38 @@ const Locations = () => {
                 </form>
             </div>
 
-            <div className={classes.row}>
-                <Table
-                    locations={currentLocations}
-                    loading={loading}
-                    handleRadioChange={handleRadioChange}
-                />
-            </div>
+            {!loading ? (
+                <>
+                    <div className={classes.row}>
+                        <Table
+                            locations={currentLocations}
+                            loading={loading}
+                            handleRadioChange={handleRadioChange}
+                        />
+                    </div>
 
-            <div className={classes.pagination}>
-                <Pagination
-                    locationsPerPage={locationsPerPage}
-                    totalLocations={locations.length}
-                    paginate={paginate}
-                />
-            </div>
-
-            <div className={classes.row}>
-                <Button
-                    variant="contained"
-                    size="small"
-                    color="primary"
-                    className={classes.pref}
-                >
-                    <Typography variant="caption" component="h3">
-                        Lecturer Preferences
-                </Typography>
-                </Button>
-                <Button
-                    variant="contained"
-                    size="small"
-                    color="primary"
-                    className={classes.pref}
-                >
-                    <Typography variant="caption" component="h3">
-                        Group Preferences
-                </Typography>
-                </Button>
-                <Button
-                    variant="contained"
-                    size="small"
-                    color="primary"
-                    className={classes.pref}
-                >
-                    <Typography variant="caption" component="h3">
-                        Session Preferences
-                </Typography>
-                </Button>
-            </div>
+                    <div className={classes.pagination}>
+                        <Pagination
+                            locationsPerPage={locationsPerPage}
+                            totalLocations={locations.length}
+                            paginate={paginate}
+                        />
+                    </div>
+                </>
+            ) : (
+                    <>
+                        <div className={classes.row}>
+                            <Skeleton variant="rect" width={650} height={450} />
+                            <Skeleton width={200} />
+                        </div>
+                    </>
+                )}
 
             <div className={classes.row}>
                 <EditLocation
                     buildings={buildings}
                     selected={selected}
+                    setSelected={setSelected}
                     locationsUpdated={locationsUpdated}
                     rid={editable.rID}
                     type={editable.rType}
@@ -231,6 +215,7 @@ const Locations = () => {
                     buildings={buildings}
                     fetchBuildings={fetchBuildings}
                 />
+                <Preferences />
             </div>
         </div>
     )

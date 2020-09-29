@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'flex-start',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         margin: theme.spacing(1),
     },
     sides: {
@@ -34,15 +34,6 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: theme.spacing(1),
         paddingBottom: theme.spacing(1),
         minWidth: 200,
-    },
-    myRowInputs: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingRight: theme.spacing(1),
-    },
-    myRowInput: {
-        width: 100
     },
     myAlert: {
         paddingTop: theme.spacing(1),
@@ -67,8 +58,10 @@ export default function AddLocation({ locationsUpdated, buildings, fetchBuilding
 
     const handleClose = () => {
         setOpen(false);
-        setBuildingAddSuccess({ type: 'info', msg: 'Enter Building ID' });
-        setRoomAddSuccess({ type: 'info', msg: 'Enter Room Info.' });
+        setTimeout(function () {
+            setBuildingAddSuccess({ type: 'info', msg: 'Enter Building ID' });
+            setRoomAddSuccess({ type: 'info', msg: 'Enter Room Info.' });
+        }, 1000)
     };
 
     const handleAddBuilding = async () => {
@@ -129,7 +122,7 @@ export default function AddLocation({ locationsUpdated, buildings, fetchBuilding
             >
                 <AddIcon />
             </IconButton>
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog fullScreen open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Add Location</DialogTitle>
                 <DialogContent className={classes.row}>
                     <Card className={classes.sides} variant="outlined">
@@ -164,7 +157,7 @@ export default function AddLocation({ locationsUpdated, buildings, fetchBuilding
                             Add Room
                         </DialogContentText>
 
-                        <div className={classes.myRowInput}>
+                        <div>
                             <TextField
                                 margin="dense"
                                 id="roomID"
@@ -172,10 +165,11 @@ export default function AddLocation({ locationsUpdated, buildings, fetchBuilding
                                 type="text"
                                 value={newRoomID}
                                 onChange={(e) => setNewRoomID(e.target.value)}
+                                fullWidth
                             />
                         </div>
-                        <div className={classes.myRowInput}>
-                            <InputLabel id="roomType-simple-select-label" className={classes.myRowInput}>
+                        <div>
+                            <InputLabel id="roomType-simple-select-label">
                                 <Typography variant="caption" component="h6">
                                     Room Type
                                     </Typography>
@@ -184,8 +178,8 @@ export default function AddLocation({ locationsUpdated, buildings, fetchBuilding
                                 labelId="roomType-simple-select-label"
                                 id="roomType-simple-select"
                                 value={roomType}
-                                className={classes.myRowInput}
                                 onChange={(e) => setRoomType(e.target.value)}
+                                fullWidth
                             >
                                 <MenuItem value='Lecture Hall'>Lecture Hall</MenuItem>
                                 <MenuItem value='Laboratory'>Laboratory</MenuItem>
@@ -204,6 +198,7 @@ export default function AddLocation({ locationsUpdated, buildings, fetchBuilding
                                 className={classes.myInput}
                                 value={buildingID}
                                 onChange={(e) => setBuildingID(e.target.value)}
+                                fullWidth
                             >
                                 {buildings.map(b => (
                                     <MenuItem key={b.id} value={b.bID}>{b.bID}</MenuItem>

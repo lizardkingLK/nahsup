@@ -328,17 +328,19 @@ ipcMain.on(channels.EDIT_SCHEDULE, async (event, arg) => {
 
 
 ipcMain.on(channels.ADD_STUDENT, async (event, arg) => {
-    const { yearNo, semNo, programmeName, groupId, subGroupId, group } = arg
-    await StudentDao.addStudent(yearNo, semNo, programmeName, groupId, subGroupId, async function (r) {
+    const { yearNo, semNo, programmeName, groupId, subGroupId } = arg
+    let a = '';
+    a = (groupId >= 10) ? groupId : `0${groupId}`
+    const groupIdLabel = `Y${yearNo}.S${semNo}.${programmeName}.${groupId}`
+    const subGroupIdLabel = groupIdLabel + `.${subGroupId}`
+    await StudentDao.addStudent(yearNo, semNo, programmeName, groupId, subGroupId, groupIdLabel, subGroupIdLabel, async function (r) {
         if (r) {
-            let gid = group.substring(0, 11);
-            let sgid = group;
-            await StudentDao.findGroupId(gid, async function async(s) {
+            await StudentDao.findGroupId(groupIdLabel, async function async(s) {
                 if (s.length === 0) {
-                    await StudentDao.addGroupId(gid, '0', async function async(t) {
-                        await StudentDao.findSubGroupId(sgid, async function async(u) {
+                    await StudentDao.addGroupId(groupIdLabel, '0', async function async(t) {
+                        await StudentDao.findSubGroupId(subGroupIdLabel, async function async(u) {
                             if (u.length === 0) {
-                                await StudentDao.addSubGroupId(sgid, '0', async function async(v) {
+                                await StudentDao.addSubGroupId(subGroupIdLabel, '0', async function async(v) {
                                     if (v) {
                                         return;
                                     }

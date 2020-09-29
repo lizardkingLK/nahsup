@@ -5,13 +5,15 @@ const SubGroupId = require('./SubGroupId')
 const StudentDao = {
 
     // ADD STUDENT
-    addStudent: (yearNo, semNo, programmeName, groupId, subGroupId, callback) => {
+    addStudent: (yearNo, semNo, programmeName, groupId, subGroupId, groupIdLabel, subGroupIdLabel, callback) => {
         const newStudent = new Student({
             year: yearNo,
             sem: semNo,
             programme: programmeName,
             group: groupId,
-            subGroup: subGroupId
+            subGroup: subGroupId,
+            groupIdLabel: groupIdLabel,
+            subGroupIdLabel: subGroupIdLabel
         })
 
         newStudent.save().then(r => callback(r))

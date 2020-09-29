@@ -1,51 +1,35 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Typography } from '@material-ui/core';
+import Pagination from '@material-ui/lab/Pagination';
 
 const useStyles = makeStyles((theme) => ({
-    pagination: {
+    root: {
+        '& > *': {
+            marginTop: theme.spacing(2),
+        },
         display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        margin: theme.spacing(1),
-        listStyle: 'none',
+        justifyItems: 'center'
     },
-    listItem: {
-        paddingLeft: 10,
-        paddingRight: 10,
-        cursor: 'pointer',
-    }
-}))
+}));
 
-const MyPagination = ({ locationsPerPage, totalLocations, paginate }) => {
+export default function PaginationOutlined({ locationsPerPage, totalLocations, paginate }) {
     const classes = useStyles();
-    const pageNumbers = [];
 
-    for (let i = 1; i <= Math.ceil(totalLocations / locationsPerPage); i++) {
-        pageNumbers.push(i);
+    const handleChange = (e) => {
+        let number = e.target.textContent;
+        if (number !== '')
+            paginate(parseInt(number))
     }
 
     return (
-        <nav>
-            <ul className={classes.pagination}>
-                {pageNumbers.map(number => (
-                    <li key={number}>
-                        <Typography
-                            variant="caption"
-                            component="h6"
-                            color="primary"
-                            onClick={() => paginate(number)}
-                            className={classes.listItem}
-                        >
-                            {number}
-                        </Typography>
-                    </li>
-                ))}
-            </ul>
-        </nav>
-    )
+        <div className={classes.root}>
+            <Pagination
+                onChange={handleChange}
+                count={Math.ceil(totalLocations / locationsPerPage)}
+                size="small"
+                hidePrevButton
+                hideNextButton
+            />
+        </div>
+    );
 }
-
-
-export default MyPagination;

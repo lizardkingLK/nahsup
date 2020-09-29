@@ -34,7 +34,7 @@ const LocationsTable = ({ locations, loading, handleRadioChange }) => {
 
     return (
         <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="locations table">
+            <Table className={classes.table} aria-label="locations table" size="small">
                 <TableHead>
                     <TableRow>
                         <TableCell>Room ID</TableCell>

@@ -41,5 +41,7 @@ module.exports = {
         LOAD_GROUPID: 'load_groupid',
         ADD_SUBGROUPID: 'add_subgroupid',
         LOAD_SUBGROUPID: 'load_subgroupid',
+        FIND_GROUPID: 'find_groupid',
+        FIND_SUBGROUPID: 'find_subgroupid',
     },
 };
