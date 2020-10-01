@@ -9,6 +9,9 @@ const SubjectDao = require('./SubjectDao')
 const ScheduleDao = require('./ScheduleDao')
 const StudentDao = require('./StudentDao')
 const TagDao = require('./TagDao')
+const PreferenceDao = require('./PreferenceDao')
+const LecturerDao = require('./LecturerDao')
+const SessionDao = require('./SessionDao')
 
 let win
 
@@ -101,6 +104,439 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+// lakmina's
+
+// subjects
+ipcMain.on(channels.LOAD_SUBJECTS, async (event) => {
+    await SubjectDao.loadSubjects(function (rs) {
+        const subArray = rs.map(r => {
+            const subCode = r.subCode
+            const year = r.year
+            const sem = r.sem
+            const name = r.name
+            const lecHrs = r.lecHrs
+            const tuteHrs = r.tuteHrs
+            const labHrs = r.labHrs
+            const evalHrs = r.evalHrs
+            const id = r._id.toString()
+            return ({ subCode, year, sem, name, lecHrs, tuteHrs, labHrs, evalHrs, id })
+        })
+        event.sender.send(channels.LOAD_SUBJECTS, subArray)
+    })
+})
+
+ipcMain.on(channels.ADD_SUBJECT, async (event, arg) => {
+    const { subjectCode, subYear, subSem, subName, subLecHrs, subTuteHrs, subLabHrs, subEvalHrs } = arg
+    await SubjectDao.addSubject
+        (subjectCode, subYear, subSem, subName, subLecHrs, subTuteHrs, subLabHrs, subEvalHrs, function (r) {
+            if (r)
+                event.sender.send(channels.ADD_SUBJECT, {
+                    success: true
+                })
+            else
+                event.sender.send(channels.ADD_SUBJECT, {
+                    success: false
+                })
+        })
+})
+
+ipcMain.on(channels.EDIT_SUBJECT, async (event, arg) => {
+    const { subjectCode, subYear, subSem, subName, subLecHrs, subTuteHrs, subLabHrs, subEvalHrs, id } = arg
+    await SubjectDao.editSubject
+        (subjectCode, subYear, subSem, subName, subLecHrs, subTuteHrs, subLabHrs, subEvalHrs, id, function (r) {
+            const { success } = r
+            event.sender.send(channels.EDIT_SUBJECT, {
+                success: success
+            })
+        })
+})
+
+ipcMain.on(channels.DELETE_SUBJECT, async (event, arg) => {
+    const { selected } = arg
+    await SubjectDao.deleteSubject(selected, function (r) {
+        const { success } = r
+        event.sender.send(channels.DELETE_SUBJECT, {
+            success: success
+        })
+    })
+})
+
+// lectueres
+ipcMain.on(channels.LOAD_LECTURERS, async (event) => {
+    await LecturerDao.loadLecturers(function (rs) {
+        const rsArray = rs.map(r => {
+            const eId = r.eId
+            const name = r.name
+            const faculty = r.faculty
+            const dep = r.dep
+            const center = r.center
+            const building = r.building
+            const level = r.level
+            const rank = r.rank
+            const id = r._id.toString()
+            return ({ eId, name, faculty, dep, center, building, level, rank, id })
+        })
+        event.sender.send(channels.LOAD_LECTURERS, rsArray)
+    })
+})
+
+ipcMain.on(channels.ADD_LECTURER, async (event, arg) => {
+    const { eId, name, faculty, dep, center, building, level, rank } = arg;
+    await LecturerDao.addLecturer(eId, name, faculty, dep, center, building, level, rank, function (b) {
+        if (b)
+            event.sender.send(channels.ADD_LECTURER, {
+                success: true
+            })
+        else
+            event.sender.send(channels.ADD_LECTURER, {
+                success: false
+            })
+    })
+})
+
+ipcMain.on(channels.DELETE_LECTURERS, async (event, arg) => {
+    const { selected } = arg
+    await LecturerDao.deleteLecturer(selected, function (r) {
+        const { success } = r
+        event.sender.send(channels.DELETE_LECTURERS, {
+            success: success
+        })
+    })
+})
+
+ipcMain.on(channels.EDIT_LECTURERS, async (event, arg) => {
+    const { eId, name, faculty, dep, center, building, level, rank, id } = arg
+    await LecturerDao.editLecturer(eId, name, faculty, dep, center, building, level, rank, id, function (r) {
+        const { success } = r
+        event.sender.send(channels.EDIT_LECTURERS, {
+            success: success
+        })
+    })
+})
+
+// sessions
+ipcMain.on(channels.LOAD_SESSIONS, async (event) => {
+    await SessionDao.loadSessions(function (rs) {
+        const subArray = rs.map(r => {
+            const lecName = r.lecName
+            const tag = r.tag
+            const subName = r.subName
+            const subCode = r.subCode
+            const groupIdSub = r.groupIdSub
+            const studentCount = r.studentCount
+            const Duration = r.Duration
+            const id = r._id.toString()
+            return ({ lecName, tag, subName, subCode, groupIdSub, studentCount, Duration, id })
+        })
+        event.sender.send(channels.LOAD_SESSIONS, subArray)
+    })
+})
+
+ipcMain.on(channels.ADD_SESSION, async (event, arg) => {
+    const { lecNames, tag, subName, subCode, groupIdSub, studentCount, Duration } = arg
+    await SessionDao.addSession
+        (lecNames, tag, subName, subCode, groupIdSub, studentCount, Duration, function (r) {
+            if (r)
+                event.sender.send(channels.ADD_SESSION, {
+                    success: true
+                })
+            else
+                event.sender.send(channels.ADD_SESSION, {
+                    success: false
+                })
+        })
+})
+
+ipcMain.on(channels.DELETE_SESSION, async (event, arg) => {
+    const { selected } = arg
+    await SessionDao.deleteSession(selected, function (r) {
+        const { success } = r
+        event.sender.send(channels.DELETE_SESSION, {
+            success: success
+        })
+    })
+})
+
+ipcMain.on(channels.SEARCH_SESSIONS, async (event, arg) => {
+    const { keyword } = arg
+    await SessionDao.searchSessions(keyword, function (se) {
+        const seArray = se.map(s => {
+            const lecName = s.lecName
+            const tag = s.tag
+            const subName = s.subName
+            const subCode = s.subCode
+            const groupIdSub = s.groupIdSub
+            const studentCount = s.studentCount
+            const Duration = s.Duration
+            const id = s._id.toString()
+            return ({ lecName, tag, subName, subCode, groupIdSub, studentCount, Duration, id })
+        })
+        event.sender.send(channels.SEARCH_SESSIONS, seArray)
+    })
+})
+
+// Supuni's
+
+// Schedule
+ipcMain.on(channels.ADD_SCHEDULE, async (event, arg) => {
+    const { dayCount, workingDays, stime, duration, wtime } = arg
+    await ScheduleDao.addSchedule(dayCount, workingDays, stime, duration, wtime, function (r) {
+        if (r)
+            event.sender.send(channels.ADD_SCHEDULE, {
+                success: true
+            })
+        else
+            event.sender.send(channels.ADD_SCHEDULE, {
+                success: false
+            })
+    })
+})
+
+ipcMain.on(channels.LOAD_SCHEDULE, async (event) => {
+    await ScheduleDao.loadSchedules(function (sh) {
+        const shArray = sh.map(r => {
+            const dayCount = r.working_days_count
+            const workingDays = r.working_days
+            const stime = r.starting_time
+            const duration = r.Working_duration
+            const wtime = r.Working_time
+            const _id = r._id.toString()
+
+            return ({ _id, dayCount, workingDays, stime, duration, wtime })
+        })
+        event.sender.send(channels.LOAD_SCHEDULE, shArray)
+    })
+})
+
+ipcMain.on(channels.SEARCH_SCHEDULE, async (event, arg) => {
+    const { keyword } = arg
+    await ScheduleDao.searchSchedules(keyword, function (sh) {
+        const shArray = sh.map(r => {
+            const dayCount = r.working_days_count
+            const workingDays = r.Working_days
+            const hrs = r.working_time_hrs
+            const mins = r.Working_time_mins
+            const duration = r.Working_duration
+            const _id = r._id.toString()
+            return ({ _id, dayCount, workingDays, hrs, mins, duration })
+        })
+        event.sender.send(channels.SEARCH_ROOMS, shArray)
+    })
+})
+
+ipcMain.on(channels.DELETE_SCHEDULE, async (event, arg) => {
+    const { selected } = arg
+    await ScheduleDao.deleteSchedule(selected, function (sh) {
+        const { success } = sh
+        event.sender.send(channels.DELETE_SCHEDULE, {
+            success: success
+        })
+    })
+})
+
+ipcMain.on(channels.EDIT_SCHEDULE, async (event, arg) => {
+    const { _id, edayCount, eworkingDays, estime, eduration, ewtime } = arg
+    await ScheduleDao.editSchedule(_id, edayCount, eworkingDays, estime, eduration, ewtime, function (sh) {
+        const { success } = sh
+        event.sender.send(channels.EDIT_SCHEDULE, {
+            success: success
+        })
+    })
+})
+
+// nimaya's
+
+// students
+ipcMain.on(channels.ADD_STUDENT, async (event, arg) => {
+    const { yearNo, semNo, programmeName, groupId, subGroupId } = arg
+    let a = '';
+    a = (groupId >= 10) ? groupId : `0${groupId}`
+    const groupIdLabel = `Y${yearNo}.S${semNo}.${programmeName}.${a}`
+    const subGroupIdLabel = groupIdLabel + `.${subGroupId}`
+    await StudentDao.addStudent(yearNo, semNo, programmeName, groupId, subGroupId, groupIdLabel, subGroupIdLabel, async function (r) {
+        if (r) {
+            await StudentDao.findGroupId(groupIdLabel, async function async(s) {
+                if (s.length === 0) {
+                    await StudentDao.addGroupId(groupIdLabel, '0', async function async(t) {
+                        await StudentDao.findSubGroupId(subGroupIdLabel, async function async(u) {
+                            if (u.length === 0) {
+                                await StudentDao.addSubGroupId(subGroupIdLabel, '0', async function async(v) {
+                                    if (v) {
+                                        return;
+                                    }
+                                })
+                            }
+                        })
+                    })
+                }
+
+                event.sender.send(channels.ADD_STUDENT, {
+                    success: true
+                })
+            })
+        }
+        else
+            event.sender.send(channels.ADD_STUDENT, {
+                success: false
+            })
+    })
+})
+
+ipcMain.on(channels.LOAD_STUDENTS, async (event) => {
+    await StudentDao.loadStudents(function (rs) {
+        const rsArray = rs.map(r => {
+            const year = r.year
+            const sem = r.sem
+            const programme = r.programme
+            const group = r.group
+            const subGroup = r.subGroup
+            const id = r._id.toString()
+            return ({ year, sem, programme, group, subGroup, id })
+        })
+        event.sender.send(channels.LOAD_STUDENTS, rsArray)
+    })
+})
+
+ipcMain.on(channels.SEARCH_STUDENTS, async (event, arg) => {
+    const { keyword } = arg
+    await StudentDao.searchStudents(keyword, function (rs) {
+        const rsArray = rs.map(r => {
+            const year = r.year
+            const sem = r.sem
+            const programme = r.programme
+            const group = r.group
+            const subGroup = r.subGroup
+            const id = r._id.toString()
+            return ({ year, sem, programme, group, subGroup, id })
+        })
+        event.sender.send(channels.SEARCH_STUDENTS, rsArray)
+    })
+})
+
+// tags
+ipcMain.on(channels.ADD_TAG, async (event, arg) => {
+    const { tagName } = arg
+    await TagDao.addTag(tagName, function (r) {
+        if (r)
+            event.sender.send(channels.ADD_TAG, {
+                success: true
+            })
+        else
+            event.sender.send(channels.ADD_TAG, {
+                success: false
+            })
+    })
+})
+
+ipcMain.on(channels.LOAD_TAGS, async (event) => {
+    await TagDao.loadTags(function (rs) {
+        const rsArray = rs.map(r => {
+            const name = r.name
+            const id = r._id.toString()
+            return ({ name, id })
+        })
+        event.sender.send(channels.LOAD_TAGS, rsArray)
+    })
+})
+
+ipcMain.on(channels.SEARCH_TAGS, async (event, arg) => {
+    const { keyword } = arg
+    await TagDao.searchTags(keyword, function (rs) {
+        const rsArray = rs.map(r => {
+            const name = r.name
+            const id = r._id.toString()
+            return ({ name, id })
+        })
+        event.sender.send(channels.SEARCH_TAGS, rsArray)
+    })
+})
+
+ipcMain.on(channels.DELETE_TAG, async (event, arg) => {
+    const { selected } = arg
+    await TagDao.deleteTag(selected, function (r) {
+        const { success } = r
+        event.sender.send(channels.DELETE_TAG, {
+            success: success
+        })
+    })
+})
+
+ipcMain.on(channels.EDIT_TAG, async (event, arg) => {
+    console.log("accessed edit tag func DB");
+    const { tagName, lid } = arg
+    await TagDao.editTag(tagName, lid, function (r) {
+        const { success } = r
+        event.sender.send(channels.EDIT_TAG, {
+            success: success
+        })
+    })
+})
+
+ipcMain.on(channels.DELETE_STUDENT, async (event, arg) => {
+    const { selected } = arg
+    await StudentDao.deleteStudent(selected, function (r) {
+        const { success } = r
+        event.sender.send(channels.DELETE_STUDENT, {
+            success: success
+        })
+    })
+})
+
+// groups
+ipcMain.on(channels.ADD_GROUPID, async (event, arg) => {
+    const { grpid, unavlblHrs } = arg
+    await StudentDao.addGroupId(grpid, unavlblHrs, function (r) {
+        if (r)
+            event.sender.send(channels.ADD_GROUPID, {
+                success: true
+            })
+        else
+            event.sender.send(channels.ADD_GROUPID, {
+                success: false
+            })
+    })
+})
+
+ipcMain.on(channels.LOAD_GROUPID, async (event) => {
+    await StudentDao.loadGroupId(function (rs) {
+        const rsArray = rs.map(r => {
+            const groupId = r.groupId
+            const unavailableHours = r.unavailableHours
+            const id = r._id.toString()
+            return ({ groupId, unavailableHours, id })
+        })
+        event.sender.send(channels.LOAD_GROUPID, rsArray)
+    })
+})
+
+ipcMain.on(channels.ADD_SUBGROUPID, async (event, arg) => {
+    const { sbGrpid, sUnavlblHrs } = arg
+    await StudentDao.addSubGroupId(sbGrpid, sUnavlblHrs, function (r) {
+        if (r)
+            event.sender.send(channels.ADD_SUBGROUPID, {
+                success: true
+            })
+        else
+            event.sender.send(channels.ADD_SUBGROUPID, {
+                success: false
+            })
+    })
+})
+
+ipcMain.on(channels.LOAD_SUBGROUPID, async (event) => {
+    await StudentDao.loadSubGroupId(function (rs) {
+        const rsArray = rs.map(r => {
+            const subGroupId = r.subGroupId
+            const unavailableHours = r.unavailableHours
+            const id = r._id.toString()
+            return ({ subGroupId, unavailableHours, id })
+        })
+        event.sender.send(channels.LOAD_SUBGROUPID, rsArray)
+    })
+})
+
+// sndp's
 
 // locations
 ipcMain.on(channels.APP_INFO, (event) => {
@@ -201,314 +637,99 @@ ipcMain.on(channels.EDIT_ROOM, async (event, arg) => {
     })
 })
 
-// subjects
-ipcMain.on(channels.LOAD_SUBJECTS, async (event) => {
-    await SubjectDao.loadSubjects(function (rs) {
-        const subArray = rs.map(r => {
-            const subCode = r.subCode
-            const year = r.year
-            const sem = r.sem
-            const name = r.name
-            const lecHrs = r.lecHrs
-            const tuteHrs = r.tuteHrs
-            const labHrs = r.labHrs
-            const evalHrs = r.evalHrs
-            const id = r._id.toString()
-            return ({ subCode, year, sem, name, lecHrs, tuteHrs, labHrs, evalHrs, id })
-        })
-        event.sender.send(channels.LOAD_SUBJECTS, subArray)
-    })
-})
-
-ipcMain.on(channels.EDIT_SUBJECT, async (event, arg) => {
-    const { subjectCode, subYear, subSem, subName, subLecHrs, subTuteHrs, subLabHrs, subEvalHrs, id } = arg
-    await SubjectDao.editSubject
-        (subjectCode, subYear, subSem, subName, subLecHrs, subTuteHrs, subLabHrs, subEvalHrs, id, function (r) {
-            const { success } = r
-            event.sender.send(channels.EDIT_SUBJECT, {
-                success: success
-            })
-        })
-})
-
-ipcMain.on(channels.DELETE_SUBJECT, async (event, arg) => {
-    const { selected } = arg
-    await SubjectDao.deleteSubject(selected, function (r) {
-        const { success } = r
-        event.sender.send(channels.DELETE_SUBJECT, {
-            success: success
-        })
-    })
-})
-
-ipcMain.on(channels.ADD_SUBJECT, async (event, arg) => {
-    const { subjectCode, subYear, subSem, subName, subLecHrs, subTuteHrs, subLabHrs, subEvalHrs } = arg
-    await SubjectDao.addSubject
-        (subjectCode, subYear, subSem, subName, subLecHrs, subTuteHrs, subLabHrs, subEvalHrs, function (r) {
-            if (r)
-                event.sender.send(channels.ADD_SUBJECT, {
-                    success: true
-                })
-            else
-                event.sender.send(channels.ADD_SUBJECT, {
-                    success: false
-                })
-        })
-})
-
-//Schedule (Supuni's)
-
-ipcMain.on(channels.ADD_SCHEDULE, async (event, arg) => {
-    const { dayCount, workingDays, stime, duration, wtime } = arg
-    await ScheduleDao.addSchedule(dayCount, workingDays, stime, duration, wtime, function (r) {
-        if (r)
-            event.sender.send(channels.ADD_SCHEDULE, {
+// preferences
+ipcMain.on(channels.FIND_PREFERENCE, async (event, arg) => {
+    const { rID } = arg
+    await PreferenceDao.findPreference(rID, async function (r) {
+        if (r.length !== 0)
+            event.sender.send(channels.FIND_PREFERENCE, {
                 success: true
             })
         else
-            event.sender.send(channels.ADD_SCHEDULE, {
+            event.sender.send(channels.FIND_PREFERENCE, {
                 success: false
             })
     })
 })
 
-ipcMain.on(channels.LOAD_SCHEDULE, async (event) => {
-    await ScheduleDao.loadSchedules(function (sh) {
-        const shArray = sh.map(r => {
-            const dayCount = r.working_days_count
-            const workingDays = r.working_days
-            const stime = r.starting_time
-            const duration = r.Working_duration
-            const wtime = r.Working_time
-            const _id = r._id.toString()
-
-            return ({ _id, dayCount, workingDays, stime, duration, wtime })
-        })
-        event.sender.send(channels.LOAD_SCHEDULE, shArray)
+ipcMain.on(channels.ADD_PREFERENCE, async (event, arg) => {
+    const { load } = arg
+    await PreferenceDao.addPreference(load, function (s) {
+        if (s)
+            event.sender.send(channels.ADD_PREFERENCE, {
+                success: true
+            })
+        else
+            event.sender.send(channels.ADD_PREFERENCE, {
+                success: false
+            })
     })
 })
 
-ipcMain.on(channels.SEARCH_SCHEDULE, async (event, arg) => {
-    const { keyword } = arg
-    await ScheduleDao.searchSchedules(keyword, function (sh) {
-        const shArray = sh.map(r => {
-            const dayCount = r.working_days_count
-            const workingDays = r.Working_days
-            const hrs = r.working_time_hrs
-            const mins = r.Working_time_mins
-            const duration = r.Working_duration
-            const _id = r._id.toString()
-            return ({ _id, dayCount, workingDays, hrs, mins, duration })
-        })
-        event.sender.send(channels.SEARCH_ROOMS, shArray)
-    })
-})
-
-ipcMain.on(channels.DELETE_SCHEDULE, async (event, arg) => {
-    const { selected } = arg
-    await ScheduleDao.deleteSchedule(selected, function (sh) {
-        const { success } = sh
-        event.sender.send(channels.DELETE_SCHEDULE, {
-            success: success
-        })
-    })
-})
-
-ipcMain.on(channels.EDIT_SCHEDULE, async (event, arg) => {
-    const { _id, edayCount, eworkingDays, estime, eduration, ewtime } = arg
-    await ScheduleDao.editSchedule(_id, edayCount, eworkingDays, estime, eduration, ewtime, function (sh) {
-        const { success } = sh
-        event.sender.send(channels.EDIT_SCHEDULE, {
-            success: success
-        })
-    })
-})
-
-// nimaya's
-
-
-ipcMain.on(channels.ADD_STUDENT, async (event, arg) => {
-    const { yearNo, semNo, programmeName, groupId, subGroupId } = arg
-    let a = '';
-    a = (groupId >= 10) ? groupId : `0${groupId}`
-    const groupIdLabel = `Y${yearNo}.S${semNo}.${programmeName}.${groupId}`
-    const subGroupIdLabel = groupIdLabel + `.${subGroupId}`
-    await StudentDao.addStudent(yearNo, semNo, programmeName, groupId, subGroupId, groupIdLabel, subGroupIdLabel, async function (r) {
-        if (r) {
-            await StudentDao.findGroupId(groupIdLabel, async function async(s) {
-                if (s.length === 0) {
-                    await StudentDao.addGroupId(groupIdLabel, '0', async function async(t) {
-                        await StudentDao.findSubGroupId(subGroupIdLabel, async function async(u) {
-                            if (u.length === 0) {
-                                await StudentDao.addSubGroupId(subGroupIdLabel, '0', async function async(v) {
-                                    if (v) {
-                                        return;
-                                    }
-                                })
-                            }
-                        })
+ipcMain.on(channels.EDIT_PREFERENCE, async (event, arg) => {
+    const { type, load } = arg
+    switch (type) {
+        case 'TAGS':
+            await PreferenceDao.editPreferenceOnTags(load, function (s) {
+                if (s)
+                    event.sender.send(channels.EDIT_PREFERENCE, {
+                        success: true
                     })
-                }
-
-                event.sender.send(channels.ADD_STUDENT, {
-                    success: true
-                })
+                else
+                    event.sender.send(channels.EDIT_PREFERENCE, {
+                        success: false
+                    })
             })
-        }
-        else
-            event.sender.send(channels.ADD_STUDENT, {
-                success: false
+            break;
+        case 'SUBJECTS':
+            await PreferenceDao.editPreferenceOnSubjects(load, function (s) {
+                if (s)
+                    event.sender.send(channels.EDIT_PREFERENCE, {
+                        success: true
+                    })
+                else
+                    event.sender.send(channels.EDIT_PREFERENCE, {
+                        success: false
+                    })
             })
-    })
-})
-
-ipcMain.on(channels.LOAD_STUDENTS, async (event) => {
-    await StudentDao.loadStudents(function (rs) {
-        const rsArray = rs.map(r => {
-            const year = r.year
-            const sem = r.sem
-            const programme = r.programme
-            const group = r.group
-            const subGroup = r.subGroup
-            const id = r._id.toString()
-            return ({ year, sem, programme, group, subGroup, id })
-        })
-        event.sender.send(channels.LOAD_STUDENTS, rsArray)
-    })
-})
-
-ipcMain.on(channels.SEARCH_STUDENTS, async (event, arg) => {
-    const { keyword } = arg
-    await StudentDao.searchStudents(keyword, function (rs) {
-        const rsArray = rs.map(r => {
-            const year = r.year
-            const sem = r.sem
-            const programme = r.programme
-            const group = r.group
-            const subGroup = r.subGroup
-            const id = r._id.toString()
-            return ({ year, sem, programme, group, subGroup, id })
-        })
-        event.sender.send(channels.SEARCH_STUDENTS, rsArray)
-    })
-})
-
-ipcMain.on(channels.ADD_TAG, async (event, arg) => {
-    const { tagName } = arg
-    await TagDao.addTag(tagName, function (r) {
-        if (r)
-            event.sender.send(channels.ADD_TAG, {
-                success: true
+            break;
+        case 'LECTURERS':
+            await PreferenceDao.editPreferenceOnLecutrers(load, function (s) {
+                if (s)
+                    event.sender.send(channels.EDIT_PREFERENCE, {
+                        success: true
+                    })
+                else
+                    event.sender.send(channels.EDIT_PREFERENCE, {
+                        success: false
+                    })
             })
-        else
-            event.sender.send(channels.ADD_TAG, {
-                success: false
+            break;
+        case 'GROUPS':
+            await PreferenceDao.editPreferenceOnGroups(load, function (s) {
+                if (s)
+                    event.sender.send(channels.EDIT_PREFERENCE, {
+                        success: true
+                    })
+                else
+                    event.sender.send(channels.EDIT_PREFERENCE, {
+                        success: false
+                    })
             })
-    })
-})
-
-ipcMain.on(channels.LOAD_TAGS, async (event) => {
-    await TagDao.loadTags(function (rs) {
-        const rsArray = rs.map(r => {
-            const name = r.name
-            const id = r._id.toString()
-            return ({ name, id })
-        })
-        event.sender.send(channels.LOAD_TAGS, rsArray)
-    })
-})
-
-ipcMain.on(channels.SEARCH_TAGS, async (event, arg) => {
-    const { keyword } = arg
-    await TagDao.searchTags(keyword, function (rs) {
-        const rsArray = rs.map(r => {
-            const name = r.name
-            const id = r._id.toString()
-            return ({ name, id })
-        })
-        event.sender.send(channels.SEARCH_TAGS, rsArray)
-    })
-})
-
-ipcMain.on(channels.DELETE_TAG, async (event, arg) => {
-    const { selected } = arg
-    await TagDao.deleteTag(selected, function (r) {
-        const { success } = r
-        event.sender.send(channels.DELETE_TAG, {
-            success: success
-        })
-    })
-})
-
-ipcMain.on(channels.EDIT_TAG, async (event, arg) => {
-    console.log("accessed edit tag func DB");
-    const { tagName, lid } = arg
-    await TagDao.editTag(tagName, lid, function (r) {
-        const { success } = r
-        event.sender.send(channels.EDIT_TAG, {
-            success: success
-        })
-    })
-})
-
-ipcMain.on(channels.DELETE_STUDENT, async (event, arg) => {
-    const { selected } = arg
-    await StudentDao.deleteStudent(selected, function (r) {
-        const { success } = r
-        event.sender.send(channels.DELETE_STUDENT, {
-            success: success
-        })
-    })
-})
-
-ipcMain.on(channels.ADD_GROUPID, async (event, arg) => {
-    const { grpid, unavlblHrs } = arg
-    await StudentDao.addGroupId(grpid, unavlblHrs, function (r) {
-        if (r)
-            event.sender.send(channels.ADD_GROUPID, {
-                success: true
+            break;
+        case 'SESSIONS':
+            await PreferenceDao.editPreferenceOnSessions(load, function (s) {
+                if (s)
+                    event.sender.send(channels.EDIT_PREFERENCE, {
+                        success: true
+                    })
+                else
+                    event.sender.send(channels.EDIT_PREFERENCE, {
+                        success: false
+                    })
             })
-        else
-            event.sender.send(channels.ADD_GROUPID, {
-                success: false
-            })
-    })
-})
-
-ipcMain.on(channels.LOAD_GROUPID, async (event) => {
-    await StudentDao.loadGroupId(function (rs) {
-        const rsArray = rs.map(r => {
-            const groupId = r.groupId
-            const unavailableHours = r.unavailableHours
-            const id = r._id.toString()
-            return ({ groupId, unavailableHours, id })
-        })
-        event.sender.send(channels.LOAD_GROUPID, rsArray)
-    })
-})
-
-ipcMain.on(channels.ADD_SUBGROUPID, async (event, arg) => {
-    const { sbGrpid, sUnavlblHrs } = arg
-    await StudentDao.addSubGroupId(sbGrpid, sUnavlblHrs, function (r) {
-        if (r)
-            event.sender.send(channels.ADD_SUBGROUPID, {
-                success: true
-            })
-        else
-            event.sender.send(channels.ADD_SUBGROUPID, {
-                success: false
-            })
-    })
-})
-
-ipcMain.on(channels.LOAD_SUBGROUPID, async (event) => {
-    await StudentDao.loadSubGroupId(function (rs) {
-        const rsArray = rs.map(r => {
-            const subGroupId = r.subGroupId
-            const unavailableHours = r.unavailableHours
-            const id = r._id.toString()
-            return ({ subGroupId, unavailableHours, id })
-        })
-        event.sender.send(channels.LOAD_SUBGROUPID, rsArray)
-    })
+            break;
+        default:
+            break;
+    }
 })

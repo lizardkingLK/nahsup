@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     pagination: {
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-end',
     }
 }))
 
@@ -48,6 +48,9 @@ const Locations = () => {
     const classes = useStyles();
     const [locations, setLocations] = useState([]);
     const [buildings, setBuildings] = useState([]);
+    const [tags, setTags] = useState([]);
+    const [subjects, setSubjects] = useState([]);
+    const [lecturers, setLecturers] = useState([]);
 
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
@@ -88,10 +91,43 @@ const Locations = () => {
         });
     }
 
+    const fetchTags = async () => {
+        ipcRenderer.send(channels.LOAD_TAGS);
+
+        ipcRenderer.on(channels.LOAD_TAGS, (event, arg) => {
+            ipcRenderer.removeAllListeners(channels.LOAD_TAGS);
+            const ts = arg;
+            setTags(ts);
+        });
+    }
+
+    const fetchSubjects = async () => {
+        ipcRenderer.send(channels.LOAD_SUBJECTS);
+
+        ipcRenderer.on(channels.LOAD_SUBJECTS, (event, arg) => {
+            ipcRenderer.removeAllListeners(channels.LOAD_SUBJECTS);
+            const ss = arg;
+            setSubjects(ss);
+        });
+    }
+
+    const fetchLecturers = async () => {
+        ipcRenderer.send(channels.LOAD_LECTURERS);
+
+        ipcRenderer.on(channels.LOAD_LECTURERS, (event, arg) => {
+            ipcRenderer.removeAllListeners(channels.LOAD_LECTURERS);
+            const ls = arg;
+            setLecturers(ls);
+        });
+    }
+
     // useeffect => runs when mounted and also when content gets updated
     useEffect(() => {
         fetchBuildings();
         fetchLocations();
+        fetchTags();
+        fetchSubjects();
+        fetchLecturers();
     }, []);
 
     // refresh table
@@ -215,7 +251,12 @@ const Locations = () => {
                     buildings={buildings}
                     fetchBuildings={fetchBuildings}
                 />
-                <Preferences />
+                <Preferences
+                    locations={locations}
+                    tags={tags}
+                    subjects={subjects}
+                    lecturers={lecturers}
+                />
             </div>
         </div>
     )

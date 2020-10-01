@@ -70,6 +70,7 @@ export default function AddSubject({ subjectsUpdated }) {
 
     const handleClose = () => {
         setOpen(false);
+        setSubjectAddSuccess({ type: 'info', msg: 'Enter Subject Info.' });
     };
 
     const handleAddSubject = async () => {

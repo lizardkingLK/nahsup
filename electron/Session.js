@@ -1,23 +1,37 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const RoomSchema = new Schema({
-    rID: {
-        type: String,
-        unique: true,
+const SessionSchema = new Schema({
+    lecName: {
+        type: Array,
         required: true
     },
-    rType: {
-        type: String,
-        required: true
-    },
-    bID: {
+    tag: {
         type: String,
         required: true
     },
-    capacity: {
+    subName: {
+        type: String,
+        required: true
+    },
+    subCode: {
+        type: String,
+        required: true
+    },
+    groupIdSub: {
+        type: String,
+        required: true
+    },
+    studentCount: {
         type: Number,
         required: true
+    },
+    Duration: {
+        type: Number,
+        required: true
+    },
+    unavailableTime:{
+        type: String
     },
     dateCreated: {
         type: Date,
@@ -29,6 +43,4 @@ const RoomSchema = new Schema({
     }
 });
 
-RoomSchema.index({ rID: "text" })
-
-module.exports = Room = mongoose.model('room', RoomSchema)
+module.exports = Session = mongoose.model('session', SessionSchema)

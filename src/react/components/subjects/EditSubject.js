@@ -62,7 +62,7 @@ export default function EditSubject({ selected, subjectsUpdated, subCode, year, 
     const [subLabHrs, setSubLabHrs] = React.useState(0);
     const [subEvalHrs, setSubEvalHrs] = React.useState(0);
 
-    const [subjectEditSuccess, setSubjectEditSuccess] = React.useState({ type: 'info', msg: 'Enter Subejct Info.' });
+    const [subjectEditSuccess, setSubjectEditSuccess] = React.useState({ type: 'info', msg: 'Enter Subject Info.' });
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -70,6 +70,7 @@ export default function EditSubject({ selected, subjectsUpdated, subCode, year, 
 
     const handleClose = () => {
         setOpen(false);
+        setSubjectEditSuccess({ type: 'info', msg: 'Enter Subject Info.' });
     };
 
     const handleEditSubject = async () => {
@@ -97,7 +98,7 @@ export default function EditSubject({ selected, subjectsUpdated, subCode, year, 
                 ipcRenderer.removeAllListeners(channels.EDIT_SUBJECT);
                 const { success } = arg;
                 if (success) {
-                    setSubjectEditSuccess({ type: 'success', msg: 'Subject editted.' });
+                    setSubjectEditSuccess({ type: 'success', msg: 'Subject edited.' });
                     setSubjectCode('');
                     setSubYear('');
                     setSubSem('');

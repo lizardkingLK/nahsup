@@ -4,6 +4,7 @@ const Schema = mongoose.Schema
 const BuildingSchema = new Schema({
     bID: {
         type: String,
+        unique: true,
         required: true
     },
     dateCreated: {

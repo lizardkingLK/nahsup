@@ -155,9 +155,9 @@ export default function EditSchedule({ selected, scheduleUpdated, setSelected, _
 
     //Uncheck all checkBoxes when edited
     const uncheckCheckBoxes = () => {
-        wdays.map((item) => {
-            item.check = false;
-        })
+        wdays.map((item) => (
+            item.check = false
+        ))
         setWdays([...wdays]);
     }
 

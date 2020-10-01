@@ -35,7 +35,7 @@ const SubjectDao = {
             });
     },
     // EDIT SUBJECT
-    editSubject: (subjectCode, subYear, subSem, subName, subLecHrs, subTuteHrs, subLabHrs, subEvalHrs, id) => {
+    editSubject: (subjectCode, subYear, subSem, subName, subLecHrs, subTuteHrs, subLabHrs, subEvalHrs, id, callback) => {
         Subject.findOneAndUpdate({ _id: id }, {
             $set: {
                 subCode: subjectCode,
@@ -51,9 +51,9 @@ const SubjectDao = {
             .then(() => {
                 callback({ success: true })
             }).catch(err => {
-                console.error(err);
-                callback({ success: false })
-            })
+            console.error(err);
+            callback({ success: false })
+        })
     }
 }
 
