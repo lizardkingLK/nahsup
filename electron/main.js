@@ -359,15 +359,28 @@ ipcMain.on(channels.ADD_STUDENT, async (event, arg) => {
             await StudentDao.findGroupId(groupIdLabel, async function async(s) {
                 if (s.length === 0) {
                     await StudentDao.addGroupId(groupIdLabel, '0', async function async(t) {
-                        await StudentDao.findSubGroupId(subGroupIdLabel, async function async(u) {
-                            if (u.length === 0) {
-                                await StudentDao.addSubGroupId(subGroupIdLabel, '0', async function async(v) {
-                                    if (v) {
-                                        return;
-                                    }
-                                })
-                            }
-                        })
+                        if (t) {
+                            await StudentDao.findSubGroupId(subGroupIdLabel, async function async(u) {
+                                if (u.length === 0) {
+                                    await StudentDao.addSubGroupId(subGroupIdLabel, '0', async function async(v) {
+                                        if (v) {
+                                            return;
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                    })
+                }
+                else {
+                    await StudentDao.findSubGroupId(subGroupIdLabel, async function async(u) {
+                        if (u.length === 0) {
+                            await StudentDao.addSubGroupId(subGroupIdLabel, '0', async function async(v) {
+                                if (v) {
+                                    return;
+                                }
+                            })
+                        }
                     })
                 }
 
@@ -719,6 +732,18 @@ ipcMain.on(channels.EDIT_PREFERENCE, async (event, arg) => {
             break;
         case 'SESSIONS':
             await PreferenceDao.editPreferenceOnSessions(load, function (s) {
+                if (s)
+                    event.sender.send(channels.EDIT_PREFERENCE, {
+                        success: true
+                    })
+                else
+                    event.sender.send(channels.EDIT_PREFERENCE, {
+                        success: false
+                    })
+            })
+            break;
+        case 'UNAVAILABLES':
+            await PreferenceDao.editPreferenceOnUnavailables(load, function (s) {
                 if (s)
                     event.sender.send(channels.EDIT_PREFERENCE, {
                         success: true

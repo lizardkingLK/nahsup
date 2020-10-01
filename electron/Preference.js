@@ -27,6 +27,10 @@ const PreferenceSchema = new Schema({
         type: Array,
         default: []
     },
+    unavailabilities: {
+        type: Array,
+        default: []
+    },
     lastUpdated: {
         type: Date,
         default: Date.now

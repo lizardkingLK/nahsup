@@ -168,7 +168,7 @@ export default function AddSession({ sessionsUpdated, lecturers, subjects, stude
                         >
                             {(lecturers.filter(l => (l.level === '1' || l.level === '2')).map(p => {
                                 return (
-                                    <MenuItem key={p._id} value={p.name}>{p.name}</MenuItem>
+                                    <MenuItem key={p.id} value={p.name}>{p.name}</MenuItem>
                                 )
                             }))}
                         </Select>
@@ -188,7 +188,7 @@ export default function AddSession({ sessionsUpdated, lecturers, subjects, stude
                         >
                             {(lecturers.filter(l => (l.level === '4' || l.level === '5' || l.level === '3' || l.level === '6')).map(p => {
                                 return (
-                                    <MenuItem key={p._id} value={p.name}>{p.name}</MenuItem>
+                                    <MenuItem key={p.id} value={p.name}>{p.name}</MenuItem>
                                 )
                             }))}
                         </Select>
@@ -208,7 +208,7 @@ export default function AddSession({ sessionsUpdated, lecturers, subjects, stude
                         >
                             {(lecturers.filter(l => l.level === '7').map(p => {
                                 return (
-                                    <MenuItem key={p._id} value={p.name}>{p.name}</MenuItem>
+                                    <MenuItem key={p.id} value={p.name}>{p.name}</MenuItem>
                                 )
                             }))}
                         </Select>
@@ -229,7 +229,7 @@ export default function AddSession({ sessionsUpdated, lecturers, subjects, stude
 
                             {(subjects.map(s => {
                                 return (
-                                    <MenuItem key={s._id} value={s.name}>{s.name}</MenuItem>
+                                    <MenuItem key={s.id} value={s.name}>{s.name}</MenuItem>
                                 )
                             }))}
 
@@ -250,7 +250,7 @@ export default function AddSession({ sessionsUpdated, lecturers, subjects, stude
                         >
                             {(subjects.filter(s => s.name === subName).map(s => {
                                 return (
-                                    <MenuItem key={s._id} value={s.subCode}>{s.subCode}</MenuItem>
+                                    <MenuItem key={s.id} value={s.subCode}>{s.subCode}</MenuItem>
                                 )
                             }))}
                         </Select>
@@ -289,7 +289,7 @@ export default function AddSession({ sessionsUpdated, lecturers, subjects, stude
                             >
                                 {(students.map(s => {
                                     return (
-                                        <MenuItem key={s._id} value={s.groupIdLabel}>{s.groupIdLabel}</MenuItem>
+                                        <MenuItem key={s.id} value={s.groupIdLabel}>{s.groupIdLabel}</MenuItem>
                                     )
                                 }))}
                             </Select>
@@ -311,7 +311,7 @@ export default function AddSession({ sessionsUpdated, lecturers, subjects, stude
                             >
                                 {(students.map(s => {
                                     return (
-                                        <MenuItem key={s._id} value={s.subGroupIdLabel}>{s.subGroupIdLabel}</MenuItem>
+                                        <MenuItem key={s.id} value={s.subGroupIdLabel}>{s.subGroupIdLabel}</MenuItem>
                                     )
                                 }))}
                             </Select>

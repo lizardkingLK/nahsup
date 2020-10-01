@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import List from "@material-ui/core/List";
 import Grid from "@material-ui/core/Grid";
 import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 
 const useStyles = makeStyles((theme) => ({
     row: {
@@ -26,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-const Posts = ({ sessions, loading, handleRadioChange }) => {
+const Posts = ({ loading, handleRadioChange }) => {
     const classes = useStyles();
     const [selectedValue, setSelectedValue] = React.useState('');
 
@@ -41,42 +42,26 @@ const Posts = ({ sessions, loading, handleRadioChange }) => {
 
     return (
         <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="sessions table" size="small">
+            <Table className={classes.table} aria-label="sessions table">
                 <TableHead>
                     <TableRow>
-                        <TableCell>Sessions</TableCell>
+                        <TableCell>Consecutive Sessions</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {sessions.map((row) => (
-                        <TableRow key={row.id}>
+                        <TableRow >
                             <TableCell component="th" scope="row">
-                                <Grid item xs={12} md={6}>
+                                <Grid  item xs={12} md={6}>
                                     <div className={classes.demo}>
                                         <List >
                                             <ListItem>
-                                                <Radio
-                                                    checked={selectedValue === row.id}
-                                                    onChange={handleChange}
-                                                    value={row.id}
-                                                    color="primary"
-                                                    name="radio-button-location"
-                                                    inputProps={{ 'aria-label': row.id }}
-                                                />
-
-                                                {(row.lecName).map(ln => (ln + ", ")
-                                                )}<br />
-                                                {row.subName} ({row.subCode})<br />
-                                                {row.tag}<br />
-                                                {row.groupIdSub}<br />
-                                                {row.studentCount} ({row.Duration})
-                                                </ListItem>
+                                                Con Sessions
+                                            </ListItem>
                                         </List>
                                     </div>
                                 </Grid>
                             </TableCell>
                         </TableRow>
-                    ))}
                 </TableBody>
             </Table>
         </TableContainer>

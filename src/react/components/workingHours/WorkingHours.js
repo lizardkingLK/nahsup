@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import { IconButton } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -31,8 +31,8 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-const createData = (_id, dayCount,workingDays,stime,duration,wtime) => {
-    return { _id, dayCount,workingDays,stime,duration,wtime};
+const createData = (_id, dayCount, workingDays, stime, duration, wtime) => {
+    return { _id, dayCount, workingDays, stime, duration, wtime };
 }
 
 const WorkingHours = () => {
@@ -40,7 +40,7 @@ const WorkingHours = () => {
     const [schedules, setSchedules] = useState([]);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [schedulesPerPage] = useState(3);
+    const [schedulesPerPage] = useState(5);
     const [selected, setSelected] = useState('');
     const [editable, setEditable] = useState('');
     const childRef = useRef();
@@ -61,19 +61,19 @@ const WorkingHours = () => {
         ipcRenderer.on(channels.LOAD_SCHEDULE, (event, arg) => {
             ipcRenderer.removeAllListeners(channels.LOAD_SCHEDULE);
             const sh = arg;
-            const shArray = sh.map(s => createData(s._id, s.dayCount,s.workingDays,s.stime,s.duration,s.wtime))
+            const shArray = sh.map(s => createData(s._id, s.dayCount, s.workingDays, s.stime, s.duration, s.wtime))
             setSchedules(shArray);
         });
         setLoading(false);
         childRef.current.resetSelected();
     }
 
-   
+
 
     // useeffect => runs when mounted and also when content gets updated
     useEffect(() => {
         fetchSchedules();
-      
+
     }, []);
 
     // refresh table

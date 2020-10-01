@@ -38,7 +38,7 @@ const SubjectsTable = ({ subjects, loading, handleRadioChange }) => {
 
     return (
         <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="subjects table">
+            <Table className={classes.table} aria-label="subjects table" size="small">
                 <TableHead>
                     <TableRow>
                         <TableCell>SubjectCode</TableCell>

@@ -100,66 +100,26 @@ const LocationDao = {
                 callback(false)
             })
     },
-    // // LOAD BUILDINGS
-    // loadBuildings: (callback) => {
-    //     Building.find().lean().then(bs => callback(bs))
-    // },
-    // // ADD ROOM
-    // addRoom: (newRoomID, roomType, buildingID, capacity, callback) => {
-    //     const newRoom = new Room({
-    //         rID: newRoomID,
-    //         rType: roomType,
-    //         bID: buildingID,
-    //         capacity: capacity
-    //     })
-
-    //     newRoom.save().then(r => callback(r))
-    // },
-    // // LOAD ROOMS
-    // loadRooms: (callback) => {
-    //     Room.find().lean().then(rs => callback(rs))
-    // },
-    // // SEARCH ROOMS
-    // searchRooms: (keyword, callback) => {
-    //     Room.find({ $text: { $search: keyword } })
-    //         .then(rs => {
-    //             if (rs)
-    //                 callback(rs)
-    //             else
-    //                 callback([])
-    //         })
-    // },
-    // // DELETE ROOM
-    // deleteRoom: (id, callback) => {
-    //     Room.findById(id)
-    //         .then(r => {
-    //             Room.deleteOne(r)
-    //                 .then(() => {
-    //                     callback({ success: true })
-    //                 })
-    //                 .catch(err => {
-    //                     console.error(err);
-    //                     callback({ success: false })
-    //                 })
-    //         });
-    // },
-    // // EDIT ROOM
-    // editRoom: (newRoomID, roomType, buildingID, capacity, lid, callback) => {
-    //     Room.findOneAndUpdate({ _id: lid }, {
-    //         $set: {
-    //             rID: newRoomID,
-    //             rType: roomType,
-    //             bID: buildingID,
-    //             capacity: capacity
-    //         }
-    //     }, { useFindAndModify: false })
-    //         .then(() => {
-    //             callback({ success: true })
-    //         }).catch(err => {
-    //             console.error(err);
-    //             callback({ success: false })
-    //         })
-    // }
+    // EDIT PREFERENCE ON UNAVAILABILITIES
+    editPreferenceOnUnavailabilities: (preference, callback) => {
+        const rID = preference.rID
+        const load = preference.unavailabilities
+        Preference.findOneAndUpdate({ rID: rID }, {
+            $set: {
+                lastUpdated: new Date().toISOString(),
+            },
+            $push: { unavailabilities: load }
+        }, { useFindAndModify: false })
+            .then(() => {
+                callback(true)
+            }).catch(err => {
+                callback(false)
+            })
+    },
+    // // LOAD PREFERENCES
+    loadPreferences: (callback) => {
+        Preference.find().lean().then(ps => callback(ps))
+    },
 }
 
 module.exports = LocationDao

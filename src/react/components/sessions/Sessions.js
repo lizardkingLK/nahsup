@@ -46,7 +46,7 @@ const Sessions = () => {
 
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [sessionsPerPage] = useState(3);
+    const [sessionsPerPage] = useState(5);
     const [selected, setSelected] = useState('');
     const [editable, setEditable] = useState('');
 

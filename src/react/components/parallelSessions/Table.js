@@ -9,6 +9,10 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Radio from '@material-ui/core/Radio';
 import Typography from '@material-ui/core/Typography';
+import List from "@material-ui/core/List";
+import Grid from "@material-ui/core/Grid";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 
 const useStyles = makeStyles((theme) => ({
     row: {
@@ -23,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-const TagsTable = ({ tags, loading, handleRadioChange }) => {
+const Posts = ({ loading, handleRadioChange }) => {
     const classes = useStyles();
     const [selectedValue, setSelectedValue] = React.useState('');
 
@@ -38,32 +42,30 @@ const TagsTable = ({ tags, loading, handleRadioChange }) => {
 
     return (
         <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="tags table" size="small">
+            <Table className={classes.table} aria-label="sessions table">
                 <TableHead>
                     <TableRow>
-                        <TableCell>Tag Name</TableCell>
+                        <TableCell>Parallel Sessions</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {tags.map(row => (
-                        <TableRow key={row.id}>
-                            <TableCell component="th" scope="row">
-                                <Radio
-                                    checked={selectedValue === row.id}
-                                    onChange={handleChange}
-                                    value={row.id}
-                                    color="primary"
-                                    name="radio-button-student"
-                                    inputProps={{ 'aria-label': row.id }}
-                                />
-                                {row.tname}
-                            </TableCell>
-                        </TableRow>
-                    ))}
+                    <TableRow >
+                        <TableCell component="th" scope="row">
+                            <Grid  item xs={12} md={6}>
+                                <div className={classes.demo}>
+                                    <List >
+                                        <ListItem>
+                                            Par Sessions
+                                        </ListItem>
+                                    </List>
+                                </div>
+                            </Grid>
+                        </TableCell>
+                    </TableRow>
                 </TableBody>
             </Table>
         </TableContainer>
     )
 }
 
-export default TagsTable;
+export default Posts;

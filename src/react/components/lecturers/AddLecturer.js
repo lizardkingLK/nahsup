@@ -72,7 +72,6 @@ export default function AddLecturer({ lecturersUpdated }) {
         setLecturerAddSuccess({ type: 'info', msg: 'Enter Lecturer Info' });
     };
 
-
     const handleAddLecturer = async () => {
         if (eId.length === 0)
             setLecturerAddSuccess({ type: 'warning', msg: 'Lecturer ID not entered' });
@@ -114,8 +113,6 @@ export default function AddLecturer({ lecturersUpdated }) {
         }
     }
 
-
-
     return (
         <div>
             <IconButton
@@ -149,7 +146,6 @@ export default function AddLecturer({ lecturersUpdated }) {
                             onChange={(e) => setName(e.target.value)}
                             fullWidth
                         />
-
 
                         <InputLabel id="faculty-simple-select-label" fullWidth>
                             <Typography variant="caption" component="h6">
@@ -190,7 +186,7 @@ export default function AddLecturer({ lecturersUpdated }) {
                         <InputLabel id="center-simple-select-label" fullWidth>
                             <Typography variant="caption" component="h6">
                                 Center
-                                </Typography>
+                            </Typography>
                         </InputLabel>
                         <Select
                             labelId="center-simple-select-label"

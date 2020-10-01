@@ -71,7 +71,7 @@ const StudentDao = {
     },
     // LOAD SUB GROUP ID
     loadSubGroupId: (callback) => {
-        GroupId.find().lean().then(rs => callback(rs))
+        SubGroupId.find().lean().then(rs => callback(rs))
     },
 
     // FIND GROUP ID

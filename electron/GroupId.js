@@ -2,7 +2,6 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const GroupIdSchema = new Schema({
-
     groupId: {
         type: String,
         unique: true,

@@ -51,6 +51,9 @@ const Locations = () => {
     const [tags, setTags] = useState([]);
     const [subjects, setSubjects] = useState([]);
     const [lecturers, setLecturers] = useState([]);
+    const [groupIDs, setGroupIDs] = useState([]);
+    const [subGroupIDs, setSubGroupIDs] = useState([]);
+    const [sessions, setSessions] = useState([]);
 
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
@@ -121,6 +124,36 @@ const Locations = () => {
         });
     }
 
+    const fetchGroupIDs = async () => {
+        ipcRenderer.send(channels.LOAD_GROUPID);
+
+        ipcRenderer.on(channels.LOAD_GROUPID, (event, arg) => {
+            ipcRenderer.removeAllListeners(channels.LOAD_GROUPID);
+            const gids = arg;
+            setGroupIDs(gids);
+        });
+    }
+
+    const fetchSubGroupIDs = async () => {
+        ipcRenderer.send(channels.LOAD_SUBGROUPID);
+
+        ipcRenderer.on(channels.LOAD_SUBGROUPID, (event, arg) => {
+            ipcRenderer.removeAllListeners(channels.LOAD_SUBGROUPID);
+            const sgids = arg;
+            setSubGroupIDs(sgids);
+        });
+    }
+
+    const fetchSessions = async () => {
+        ipcRenderer.send(channels.LOAD_SESSIONS);
+
+        ipcRenderer.on(channels.LOAD_SESSIONS, (event, arg) => {
+            ipcRenderer.removeAllListeners(channels.LOAD_SESSIONS);
+            const sess = arg;
+            setSessions(sess);
+        });
+    }
+
     // useeffect => runs when mounted and also when content gets updated
     useEffect(() => {
         fetchBuildings();
@@ -128,6 +161,9 @@ const Locations = () => {
         fetchTags();
         fetchSubjects();
         fetchLecturers();
+        fetchGroupIDs();
+        fetchSubGroupIDs();
+        fetchSessions();
     }, []);
 
     // refresh table
@@ -256,6 +292,9 @@ const Locations = () => {
                     tags={tags}
                     subjects={subjects}
                     lecturers={lecturers}
+                    groupIDs={groupIDs}
+                    subGroupIDs={subGroupIDs}
+                    sessions={sessions}
                 />
             </div>
         </div>

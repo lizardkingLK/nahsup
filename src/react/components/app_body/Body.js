@@ -25,6 +25,9 @@ import Students from '../students/Students';
 import Subjects from '../subjects/Subjects';
 import Tags from '../tags/Tags';
 import WorkingHours from '../workingHours/WorkingHours';
+import Unavailability from '../unAvailability/Unavailability';
+import ParallelSessions from '../parallelSessions/ParallelSessions';
+import ConsecutiveSessions from '../consecutiveSessions/ConsecutiveSessions';
 
 const drawerWidth = 240;
 
@@ -143,6 +146,24 @@ const tabs = [
         imgPath:
             require('../../images/sessions.svg'),
         component: Sessions
+    },
+    {
+        label: 'Consecutive Sessions',
+        imgPath:
+            require('../../images/cons.svg'),
+        component: ConsecutiveSessions
+    },
+    {
+        label: 'Parallel Sessions',
+        imgPath:
+            require('../../images/para.svg'),
+        component: ParallelSessions
+    },
+    {
+        label: 'Unavailability',
+        imgPath:
+            require('../../images/unavail.svg'),
+        component: Unavailability
     }
 ]
 

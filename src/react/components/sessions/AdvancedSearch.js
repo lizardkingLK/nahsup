@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-export default function AdvancedSearch({ subjects,lecturers, searchFilter }) {
+export default function AdvancedSearch({ subjects, lecturers, searchFilter }) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [subject, setSubject] = React.useState('');
@@ -34,8 +34,8 @@ export default function AdvancedSearch({ subjects,lecturers, searchFilter }) {
 
     const acceptClose = () => {
         setOpen(false);
-        if(subject.length !== 0 && lecturer.length !== 0)
-            searchFilter({subject,lecturer},'both')
+        if (subject.length !== 0 && lecturer.length !== 0)
+            searchFilter({ subject, lecturer }, 'both')
         else {
             if (subject.length !== 0)
                 searchFilter(subject, 'subject')
@@ -52,8 +52,6 @@ export default function AdvancedSearch({ subjects,lecturers, searchFilter }) {
 
         setLecturer('')
         setSubject('')
-
-        // hari balapan
     };
 
     return (
@@ -82,9 +80,9 @@ export default function AdvancedSearch({ subjects,lecturers, searchFilter }) {
                             value={subject}
                             onChange={(e) => setSubject(e.target.value)}
                         >
-                            {subjects.map( (s,i,arr) => {
+                            {subjects.map((s, i, arr) => {
                                 return (
-                                    <MenuItem key={s._id} value={s.name}>{s.name}</MenuItem>
+                                    <MenuItem key={s.id} value={s.name}>{s.name}</MenuItem>
                                 )
                             })}
                         </Select>
@@ -104,7 +102,7 @@ export default function AdvancedSearch({ subjects,lecturers, searchFilter }) {
                             onChange={(e) => setLecturer(e.target.value)}
                         >
                             {lecturers.map(s => (
-                                <MenuItem key={s._id} value={s.name}>{s.name}</MenuItem>
+                                <MenuItem key={s.id} value={s.name}>{s.name}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>

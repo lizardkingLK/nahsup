@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-const TagsTable = ({ tags, loading, handleRadioChange }) => {
+const Posts = ({ loading, handleRadioChange }) => {
     const classes = useStyles();
     const [selectedValue, setSelectedValue] = React.useState('');
 
@@ -38,32 +38,23 @@ const TagsTable = ({ tags, loading, handleRadioChange }) => {
 
     return (
         <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="tags table" size="small">
+            <Table className={classes.table} aria-label="lecturers table">
                 <TableHead>
                     <TableRow>
-                        <TableCell>Tag Name</TableCell>
+                        <TableCell>Lecturer</TableCell>
+                        <TableCell align="right">Unavailable Time Slot</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {tags.map(row => (
-                        <TableRow key={row.id}>
-                            <TableCell component="th" scope="row">
-                                <Radio
-                                    checked={selectedValue === row.id}
-                                    onChange={handleChange}
-                                    value={row.id}
-                                    color="primary"
-                                    name="radio-button-student"
-                                    inputProps={{ 'aria-label': row.id }}
-                                />
-                                {row.tname}
-                            </TableCell>
+                        <TableRow>
+                            <TableCell >kasun</TableCell>
+                            <TableCell align="right">3-5</TableCell>
                         </TableRow>
-                    ))}
+
                 </TableBody>
             </Table>
         </TableContainer>
     )
 }
 
-export default TagsTable;
+export default Posts;

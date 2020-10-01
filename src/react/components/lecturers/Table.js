@@ -38,7 +38,7 @@ const Posts = ({ lecturers, loading, handleRadioChange }) => {
 
     return (
         <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="lecturers table">
+            <Table className={classes.table} aria-label="lecturers table" size="small">
                 <TableHead>
                     <TableRow>
                         <TableCell>Employee ID</TableCell>

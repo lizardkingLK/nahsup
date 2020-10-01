@@ -42,7 +42,7 @@ const Tags = () => {
 
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [tagsPerPage] = useState(3);
+    const [tagsPerPage] = useState(5);
     const [selected, setSelected] = useState('');
     const [editable, setEditable] = useState('');
 
