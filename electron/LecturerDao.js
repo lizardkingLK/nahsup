@@ -37,7 +37,7 @@ const LecturerDao = {
             });
     },
 
-    // EDIT LECTURER
+    // EDIT LECTURERS
     editLecturer: (eId, name, faculty, dep, center, building, level, rank, id, callback) => {
         Lecturer.findOneAndUpdate({ _id: id }, {
             $set: {
@@ -54,9 +54,25 @@ const LecturerDao = {
             .then(() => {
                 callback({ success: true })
             }).catch(err => {
-            console.error(err);
-            callback({ success: false })
-        })
+                console.error(err);
+                callback({ success: false })
+            })
+    },
+
+    // EDIT LECTURER ON UNAVAILABILITY
+    editLecturerOnUnavailability: (load, callback) => {
+        const { eId, unavailableTime } = load
+        Lecturer.findOneAndUpdate({ eId: eId }, {
+            $set: {
+                unavailableTime: unavailableTime
+            }
+        }, { useFindAndModify: false })
+            .then(() => {
+                callback({ success: true })
+            }).catch(err => {
+                console.error(err);
+                callback({ success: false })
+            })
     }
 }
 

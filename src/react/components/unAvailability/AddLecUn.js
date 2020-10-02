@@ -1,21 +1,14 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, IconButton, Typography } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import {
+    Button, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, InputLabel, Select, MenuItem, Card, FormControl
+} from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import Card from '@material-ui/core/Card';
 import AddIcon from '@material-ui/icons/Add';
 
+import UnavailableForm from './UnavailableForm';
+
 import { channels } from '../../../shared/constants';
-import FormControl from "@material-ui/core/FormControl";
 const { ipcRenderer } = window.require('electron');
 
 const useStyles = makeStyles((theme) => ({
@@ -49,13 +42,16 @@ const useStyles = makeStyles((theme) => ({
     myAlert: {
         paddingTop: theme.spacing(1),
         paddingBottom: theme.spacing(1),
-    }
+    },
 }))
 
-export default function AddLecUn({lecturers}) {
+export default function AddLecUn({ lecturers }) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
-    const [Lecturers, setLecturers] = React.useState([]);
+    const [lecturer, setLecturer] = React.useState('');
+    const [unavailableDay, setUnavailableDay] = React.useState('');
+    const [unavailableTimeF, setUnavailableTimeF] = React.useState('');
+    const [unavailableTimeT, setUnavailableTimeT] = React.useState('');
     const [lecUnAddSuccess, setLecUnAddSuccess] = React.useState({ type: 'info', msg: 'Enter Lecturer Info' });
 
     const handleClickOpen = () => {
@@ -66,6 +62,55 @@ export default function AddLecUn({lecturers}) {
         setOpen(false);
         setLecUnAddSuccess({ type: 'info', msg: 'Enter Lecturer Info' });
     };
+
+    const handleSubmit = async () => {
+        console.log(lecturer)
+        console.log(unavailableDay)
+        console.log(unavailableTimeF)
+        console.log(unavailableTimeT)
+
+        if (lecturer.length === 0)
+            setLecUnAddSuccess({ type: 'warning', msg: 'Select a lecturer' })
+        else if (unavailableDay.length === 0)
+            setLecUnAddSuccess({ type: 'warning', msg: 'Select a day' })
+        else if (unavailableTimeF.length === 0)
+            setLecUnAddSuccess({ type: 'warning', msg: 'Select a start time' })
+        else if (unavailableTimeT.length === 0)
+            setLecUnAddSuccess({ type: 'warning', msg: 'Select a end time' })
+        else {
+            ipcRenderer.send(channels.EDIT_LECTURER, {
+                load: {
+                    eId: lecturer,
+                    unavailableTime: { day: unavailableDay, from: unavailableTimeF, to: unavailableTimeT }
+                }
+            });
+            await ipcRenderer.on(channels.EDIT_LECTURER, (event, arg) => {
+                ipcRenderer.removeAllListeners(channels.EDIT_LECTURER);
+                const { success } = arg;
+                if (success) {
+                    setLecUnAddSuccess({
+                        type: 'success',
+                        msg: `Lecturer Time of unavailable Updated Successfully. ${unavailableDay}
+                        from ${unavailableTimeF} to ${unavailableTimeT}`
+                    });
+                    setLecturer('');
+                    setUnavailableDay('');
+                    setUnavailableTimeF('');
+                    setUnavailableTimeT('');
+                }
+                else {
+                    setLecUnAddSuccess({
+                        type: 'error',
+                        msg: `Lecturer Time of unavailable Not Updated.`
+                    });
+                    setLecturer('');
+                    setUnavailableDay('');
+                    setUnavailableTimeF('');
+                    setUnavailableTimeT('');
+                }
+            })
+        }
+    }
 
     return (
         <div>
@@ -81,35 +126,33 @@ export default function AddLecUn({lecturers}) {
                 <DialogTitle id="form-dialog-title">Add Unavailable Time Slot</DialogTitle>
                 <DialogContent className={classes.row}>
                     <Card className={classes.sides} variant="outlined">
-
-                        <FormControl className={classes.formControl}>
+                        <FormControl className={classes.formControl} fullWidth>
                             <InputLabel id="building-simple-select-label">Lecturer</InputLabel>
                             <Select
                                 labelId="building-simple-select-label"
                                 id="building-simple-select"
-                                value="lec"
+                                value={lecturer}
+                                onChange={(e) => setLecturer(e.target.value)}
                             >
                                 {lecturers.map(s => (
-                                    <MenuItem key={s._id} value={s.name}>{s.name}</MenuItem>
+                                    <MenuItem key={s.id} value={s.eId}>{s.name}</MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
 
-                        <TextField
-                            margin="dense"
-                            id="timeSlot"
-                            label="Time Slot"
-                            type="text"
-                            value="time"
-                            className={classes.myInput}
-                            fullWidth
+                        <UnavailableForm
+                            unavailableDay={unavailableDay}
+                            setUnavailableDay={setUnavailableDay}
+                            unavailableTimeF={unavailableTimeF}
+                            setUnavailableTimeF={setUnavailableTimeF}
+                            unavailableTimeT={unavailableTimeT}
+                            setUnavailableTimeT={setUnavailableTimeT}
                         />
-
-
 
                         <Button
                             size="small"
                             variant="outlined"
+                            onClick={handleSubmit}
                         >
                             ADD
                         </Button>

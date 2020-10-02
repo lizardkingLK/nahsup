@@ -1,8 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Autocomplete, Alert } from '@material-ui/lab';
 import {
-    Button, Typography, TextField, Card, Select, MenuItem,
+    Typography, Select, MenuItem,
 } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
@@ -15,35 +14,17 @@ const useStyles = makeStyles((theme) => ({
     },
     column: {
         margin: theme.spacing(1),
+        minWidth: 600
     },
     columnContent: {
         margin: theme.spacing(2),
     },
-    columnContentReversed: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        margin: theme.spacing(2),
-    },
-    table: {
-        marginTop: theme.spacing(2),
-        minWidth: 650,
-    },
 }))
 
-export default function UnavailableSpecific({
-    locations, setRoom, unavailableDay, setUnavailableDay, unavailableTimeF, setUnavailableTimeF,
-    unavailableTimeT, setUnavailableTimeT, addSuccess, handleSubmit
+export default function UnavailableForm({
+    unavailableDay, setUnavailableDay, unavailableTimeF, setUnavailableTimeF, unavailableTimeT, setUnavailableTimeT
 }) {
     const classes = useStyles();
-
-    const customLocations = locations.map((l) => {
-        const firstLetter = l.bID[0].toUpperCase();
-        return {
-            firstLetter: /[0-9]/.test(firstLetter) ? '0-9' : firstLetter,
-            ...l,
-        };
-    });
 
     let hrs = [];
     for (let i = 0; i < 24; i++)
@@ -54,28 +35,7 @@ export default function UnavailableSpecific({
                 i < 10 ? hrs.push(`0${i}:30`) : hrs.push(`${i}:30`)
 
     return (
-        <Card className={classes.column} variant="outlined">
-            <Typography variant="body1" className={classes.columnContent} color="primary">
-                Unavailability specific
-            </Typography>
-            <div className={classes.columnContent}>
-                <Typography variant="body2">
-                    You can select a room and then add Day & Time of Unavailability.
-                </Typography>
-            </div>
-            <div className={classes.columnContent}>
-                <Autocomplete
-                    id="grouped-locations"
-                    options={customLocations.sort((a, b) => -b.bID.localeCompare(a.firstLetter))}
-                    groupBy={(l) => l.bID}
-                    getOptionLabel={(l) => `${l.rID} - ${l.rType}`}
-                    onChange={(e, newValue) => setRoom(newValue.rID)}
-                    style={{ width: 300 }}
-                    size="small"
-                    disableClearable
-                    renderInput={(params) => <TextField {...params} label="Select Room..." />}
-                />
-            </div>
+        <div>
             <div className={classes.columnContent}>
                 <Typography variant="body2">
                     Select Unavailable Day
@@ -134,16 +94,6 @@ export default function UnavailableSpecific({
                         ))}
                 </Select>
             </div>
-            <div className={classes.columnContent}>
-                <Alert severity={addSuccess.type}>
-                    {addSuccess.msg}
-                </Alert>
-            </div>
-            <div className={classes.columnContentReversed}>
-                <Button onClick={(e) => handleSubmit(e, 'UNAVAILABILITIES')} color="primary">
-                    DONE
-                </Button>
-            </div>
-        </Card>
+        </div>
     )
 }

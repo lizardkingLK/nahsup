@@ -46,27 +46,26 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-export default function EditTag({ selected, tagsUpdated, n, lid }) {
+export default function EditTag({ selected, tagsUpdated, name, lid }) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [tagName, setTagName] = React.useState('');
     const [tagEditSuccess, setTagEditSuccess] = React.useState({ type: 'info', msg: 'Enter Tag Info.' });
 
-    const setTag = () => {
+    /*const setTag = () => {
         console.log("Accessed setTag");
         setTagName(selected);
-    };
+    };*/
 
     const handleClickOpen = () => {
         console.log("accessed func")
-        setTag();
         setOpen(true);
     };
 
     const handleClose = () => {
         setOpen(false);
+        setTagEditSuccess({ type: 'info', msg: 'Enter Tag Info.' });
     };
-
 
     const handleEditTag = async () => {
         if (tagName.length === 0)
@@ -114,7 +113,7 @@ export default function EditTag({ selected, tagsUpdated, n, lid }) {
                                     value={tagName}
                                     onChange={(e) => setTagName(e.target.value)}
                                 />
-                                <Typography variant="caption" component="h3">{n}</Typography>
+                                <Typography variant="caption" component="h3">{name}</Typography>
                             </div>
                         </div>
                         <Button

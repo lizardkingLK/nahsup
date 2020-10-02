@@ -8,8 +8,8 @@ const GroupIdSchema = new Schema({
         required: true
     },
     unavailableHours: {
-        type: String,
-        required: false
+        type: Object,
+        default: null
     },
     dateCreated: {
         type: Date,

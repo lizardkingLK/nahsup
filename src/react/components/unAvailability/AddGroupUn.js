@@ -1,21 +1,14 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, IconButton, Typography } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import {
+    Button, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, InputLabel, Select, MenuItem, Card, FormControl
+} from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import Card from '@material-ui/core/Card';
 import AddIcon from '@material-ui/icons/Add';
 
+import UnavailableForm from './UnavailableForm';
+
 import { channels } from '../../../shared/constants';
-import FormControl from "@material-ui/core/FormControl";
 const { ipcRenderer } = window.require('electron');
 
 const useStyles = makeStyles((theme) => ({
@@ -49,14 +42,17 @@ const useStyles = makeStyles((theme) => ({
     myAlert: {
         paddingTop: theme.spacing(1),
         paddingBottom: theme.spacing(1),
-    }
+    },
 }))
 
-export default function AddSesUn() {
+export default function AddLecUn({ groupIds }) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
-    const [Lecturers, setLecturers] = React.useState([]);
-    const [groupUnAddSuccess, setGroupUnAddSuccess] = React.useState({ type: 'info', msg: 'Enter Group Info' });
+    const [groupId, setGroupId] = React.useState('');
+    const [unavailableDay, setUnavailableDay] = React.useState('');
+    const [unavailableTimeF, setUnavailableTimeF] = React.useState('');
+    const [unavailableTimeT, setUnavailableTimeT] = React.useState('');
+    const [groUnAddSuccess, setGroUnAddSuccess] = React.useState({ type: 'info', msg: 'Enter GroupId' });
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -64,8 +60,57 @@ export default function AddSesUn() {
 
     const handleClose = () => {
         setOpen(false);
-        setGroupUnAddSuccess({ type: 'info', msg: 'Enter Group Info' });
+        setGroUnAddSuccess({ type: 'info', msg: 'Enter GroupId' });
     };
+
+    const handleSubmit = async () => {
+        console.log(groupId)
+        console.log(unavailableDay)
+        console.log(unavailableTimeF)
+        console.log(unavailableTimeT)
+
+        if (groupId.length === 0)
+            setGroUnAddSuccess({ type: 'warning', msg: 'Select a GroupId' })
+        else if (unavailableDay.length === 0)
+            setGroUnAddSuccess({ type: 'warning', msg: 'Select a day' })
+        else if (unavailableTimeF.length === 0)
+            setGroUnAddSuccess({ type: 'warning', msg: 'Select a start time' })
+        else if (unavailableTimeT.length === 0)
+            setGroUnAddSuccess({ type: 'warning', msg: 'Select a end time' })
+        else {
+            ipcRenderer.send(channels.EDIT_GROUPID, {
+                load: {
+                    id: groupId,
+                    unavailableHours: { day: unavailableDay, from: unavailableTimeF, to: unavailableTimeT }
+                }
+            });
+            await ipcRenderer.on(channels.EDIT_GROUPID, (event, arg) => {
+                ipcRenderer.removeAllListeners(channels.EDIT_GROUPID);
+                const { success } = arg;
+                if (success) {
+                    setGroUnAddSuccess({
+                        type: 'success',
+                        msg: `GroupId's Time of unavailable Updated Successfully. ${unavailableDay}
+                        from ${unavailableTimeF} to ${unavailableTimeT}`
+                    });
+                    setGroupId('');
+                    setUnavailableDay('');
+                    setUnavailableTimeF('');
+                    setUnavailableTimeT('');
+                }
+                else {
+                    setGroUnAddSuccess({
+                        type: 'error',
+                        msg: `GroupId's Time of unavailable Not Updated.`
+                    });
+                    setGroupId('');
+                    setUnavailableDay('');
+                    setUnavailableTimeF('');
+                    setUnavailableTimeT('');
+                }
+            })
+        }
+    }
 
     return (
         <div>
@@ -81,40 +126,39 @@ export default function AddSesUn() {
                 <DialogTitle id="form-dialog-title">Add Unavailable Time Slot</DialogTitle>
                 <DialogContent className={classes.row}>
                     <Card className={classes.sides} variant="outlined">
-
-                        <FormControl className={classes.formControl}>
-                            <InputLabel id="building-simple-select-label">Group Id</InputLabel>
+                        <FormControl className={classes.formControl} fullWidth>
+                            <InputLabel id="building-simple-select-label">GroupIds</InputLabel>
                             <Select
                                 labelId="building-simple-select-label"
                                 id="building-simple-select"
-                                value="ses"
+                                value={groupId}
+                                onChange={(e) => setGroupId(e.target.value)}
                             >
-                                <MenuItem value="group1">group1</MenuItem>
-                                <MenuItem value="group2">group2</MenuItem>
+                                {groupIds.map(gs => (
+                                    <MenuItem key={gs.id} value={gs.groupId}>{gs.groupId}</MenuItem>
+                                ))}
                             </Select>
                         </FormControl>
 
-                        <TextField
-                            margin="dense"
-                            id="timeSlot"
-                            label="Time Slot"
-                            type="text"
-                            value="time"
-                            className={classes.myInput}
-                            fullWidth
+                        <UnavailableForm
+                            unavailableDay={unavailableDay}
+                            setUnavailableDay={setUnavailableDay}
+                            unavailableTimeF={unavailableTimeF}
+                            setUnavailableTimeF={setUnavailableTimeF}
+                            unavailableTimeT={unavailableTimeT}
+                            setUnavailableTimeT={setUnavailableTimeT}
                         />
-
-
 
                         <Button
                             size="small"
                             variant="outlined"
+                            onClick={handleSubmit}
                         >
                             ADD
                         </Button>
                         <div className={classes.myAlert}>
-                            <Alert severity={groupUnAddSuccess.type}>
-                                {groupUnAddSuccess.msg}
+                            <Alert severity={groUnAddSuccess.type}>
+                                {groUnAddSuccess.msg}
                             </Alert>
                         </div>
                     </Card>

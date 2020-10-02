@@ -36,7 +36,8 @@ const LecturerSchema = new Schema({
         required: true
     },
     unavailableTime: {
-        type: String
+        type: Object,
+        default: null
     },
     dateCreated: {
         type: Date,

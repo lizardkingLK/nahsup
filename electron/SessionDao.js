@@ -46,6 +46,22 @@ const SessionDao = {
                     })
             });
     },
+
+    // EDIT SESSION ON UNAVAILABILITY
+    editSessionOnUnavailability: (load, callback) => {
+        const { id, unavailableTime } = load
+        Session.findOneAndUpdate({ _id: id }, {
+            $set: {
+                unavailableTime: unavailableTime
+            }
+        }, { useFindAndModify: false })
+            .then(() => {
+                callback({ success: true })
+            }).catch(err => {
+                console.error(err);
+                callback({ success: false })
+            })
+    }
 }
 
 module.exports = SessionDao

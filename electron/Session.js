@@ -30,8 +30,9 @@ const SessionSchema = new Schema({
         type: Number,
         required: true
     },
-    unavailableTime:{
-        type: String
+    unavailableTime: {
+        type: Object,
+        default: null
     },
     dateCreated: {
         type: Date,

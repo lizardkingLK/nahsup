@@ -2,7 +2,7 @@ const Tag = require('./Tag')
 
 const TagDao = {
     // ADD TAG
-    addTag: ( tagName) => {
+    addTag: (tagName) => {
         const newTag = new Tag({
             name: tagName
         })
@@ -39,19 +39,17 @@ const TagDao = {
     },
     // EDIT TAG
     editTag: (tagName, lid, callback) => {
-        console.log("accessed edit tag func")
         Tag.findOneAndUpdate({ _id: lid }, {
             $set: {
                 name: tagName
-
             }
         }, { useFindAndModify: false })
             .then(() => {
                 callback({ success: true })
             }).catch(err => {
-            console.error(err);
-            callback({ success: false })
-        })
+                console.error(err);
+                callback({ success: false })
+            })
     }
 }
 

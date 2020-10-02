@@ -85,6 +85,38 @@ const StudentDao = {
         SubGroupId.find({ subGroupId: sgid }).lean()
             .then(rs => callback(rs))
     },
+
+    // EDIT GROUP ID ON UNAVAILABILITY
+    editGroupIdOnUnavailability: (load, callback) => {
+        const { id, unavailableHours } = load
+        GroupId.findOneAndUpdate({ groupId: id }, {
+            $set: {
+                unavailableHours: unavailableHours
+            }
+        }, { useFindAndModify: false })
+            .then(() => {
+                callback({ success: true })
+            }).catch(err => {
+                console.error(err);
+                callback({ success: false })
+            })
+    },
+
+    // EDIT SUB GROUP ID ON UNAVAILABILITY
+    editSubGroupIdOnUnavailability: (load, callback) => {
+        const { id, unavailableHours } = load
+        SubGroupId.findOneAndUpdate({ subGroupId: id }, {
+            $set: {
+                unavailableHours: unavailableHours
+            }
+        }, { useFindAndModify: false })
+            .then(() => {
+                callback({ success: true })
+            }).catch(err => {
+                console.error(err);
+                callback({ success: false })
+            })
+    },
 }
 
 module.exports = StudentDao

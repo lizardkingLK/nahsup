@@ -82,6 +82,10 @@ const Tags = () => {
     const handleRadioChange = (value) => {
         console.log(value);
         setSelected(value);
+        let tTags = tags;
+        const edit = tTags.filter(s => (s.id === value))[0];
+        setEditable(edit);
+        console.log(edit)
     }
 
     // search handle
@@ -149,13 +153,11 @@ const Tags = () => {
                     lid={editable.id}
                 />
                 <DeleteTag selected={selected} tagsUpdated={tagsUpdated} />
+
                 <AddTag tagsUpdated={tagsUpdated} />
             </div>
         </div>
     )
 }
-
-
-
 
 export default Tags

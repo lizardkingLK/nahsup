@@ -27,10 +27,13 @@ module.exports = {
         SEARCH_LECTURERS: 'search lecturers',
         DELETE_LECTURERS: 'delete lecturers',
         EDIT_LECTURERS: 'edit lecturers',
+        EDIT_LECTURER: 'edit_lecturer',
+        // sessions
         ADD_SESSION: 'add_session',
         LOAD_SESSIONS: 'load_sessions',
         SEARCH_SESSIONS: 'search_sessions',
         DELETE_SESSION: 'delete_session',
+        EDIT_SESSION: 'edit_session',
 
         // supuni's
         ADD_SCHEDULE: 'add_schedule',
@@ -50,6 +53,8 @@ module.exports = {
         SEARCH_STUDENTS: 'search_students',
         EDIT_STUDENT: 'load_tags',
         DELETE_STUDENT: 'search_tags',
+        EDIT_GROUPID: 'edit_groupid',
+        EDIT_SUBGROUPID: 'edit_subgroupid',
         // tags
         ADD_TAG: 'add_tag',
         LOAD_TAGS: 'load_tags',

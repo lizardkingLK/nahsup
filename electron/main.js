@@ -66,6 +66,7 @@ function createWindow() {
             submenu: [
                 {
                     label: 'Toggle Developer Tools',
+                    accelerator: 'F12',
                     click() {
                         win.webContents.openDevTools()
                     }
@@ -178,8 +179,9 @@ ipcMain.on(channels.LOAD_LECTURERS, async (event) => {
             const building = r.building
             const level = r.level
             const rank = r.rank
+            const unavailableTime = r.unavailableTime
             const id = r._id.toString()
-            return ({ eId, name, faculty, dep, center, building, level, rank, id })
+            return ({ eId, name, faculty, dep, center, building, level, rank, unavailableTime, id })
         })
         event.sender.send(channels.LOAD_LECTURERS, rsArray)
     })
@@ -219,6 +221,16 @@ ipcMain.on(channels.EDIT_LECTURERS, async (event, arg) => {
     })
 })
 
+ipcMain.on(channels.EDIT_LECTURER, async (event, arg) => {
+    const { load } = arg
+    await LecturerDao.editLecturerOnUnavailability(load, function (r) {
+        const { success } = r
+        event.sender.send(channels.EDIT_LECTURER, {
+            success: success
+        })
+    })
+})
+
 // sessions
 ipcMain.on(channels.LOAD_SESSIONS, async (event) => {
     await SessionDao.loadSessions(function (rs) {
@@ -230,8 +242,9 @@ ipcMain.on(channels.LOAD_SESSIONS, async (event) => {
             const groupIdSub = r.groupIdSub
             const studentCount = r.studentCount
             const Duration = r.Duration
+            const unavailableTime = r.unavailableTime
             const id = r._id.toString()
-            return ({ lecName, tag, subName, subCode, groupIdSub, studentCount, Duration, id })
+            return ({ lecName, tag, subName, subCode, groupIdSub, studentCount, Duration, unavailableTime, id })
         })
         event.sender.send(channels.LOAD_SESSIONS, subArray)
     })
@@ -277,6 +290,16 @@ ipcMain.on(channels.SEARCH_SESSIONS, async (event, arg) => {
             return ({ lecName, tag, subName, subCode, groupIdSub, studentCount, Duration, id })
         })
         event.sender.send(channels.SEARCH_SESSIONS, seArray)
+    })
+})
+
+ipcMain.on(channels.EDIT_SESSION, async (event, arg) => {
+    const { load } = arg
+    await SessionDao.editSessionOnUnavailability(load, function (r) {
+        const { success } = r
+        event.sender.send(channels.EDIT_SESSION, {
+            success: success
+        })
     })
 })
 
@@ -480,7 +503,6 @@ ipcMain.on(channels.DELETE_TAG, async (event, arg) => {
 })
 
 ipcMain.on(channels.EDIT_TAG, async (event, arg) => {
-    console.log("accessed edit tag func DB");
     const { tagName, lid } = arg
     await TagDao.editTag(tagName, lid, function (r) {
         const { success } = r
@@ -550,6 +572,26 @@ ipcMain.on(channels.LOAD_SUBGROUPID, async (event) => {
             return ({ subGroupId, unavailableHours, id })
         })
         event.sender.send(channels.LOAD_SUBGROUPID, rsArray)
+    })
+})
+
+ipcMain.on(channels.EDIT_GROUPID, async (event, arg) => {
+    const { load } = arg
+    await StudentDao.editGroupIdOnUnavailability(load, function (r) {
+        const { success } = r
+        event.sender.send(channels.EDIT_GROUPID, {
+            success: success
+        })
+    })
+})
+
+ipcMain.on(channels.EDIT_SUBGROUPID, async (event, arg) => {
+    const { load } = arg
+    await StudentDao.editSubGroupIdOnUnavailability(load, function (r) {
+        const { success } = r
+        event.sender.send(channels.EDIT_SUBGROUPID, {
+            success: success
+        })
     })
 })
 

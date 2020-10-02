@@ -81,9 +81,10 @@ export default function SubjectsSpecific({
                     style={{ width: 300 }}
                     onChange={(e) => setTag(e.target.value)}
                 >
-                    {tags.map(t => (
-                        <MenuItem key={t.name} value={t.name}>{t.name}</MenuItem>
-                    ))}
+                    {[{ name: 'Lecture' }, { name: 'Tutorial' }, { name: 'Practical' }]
+                        .map(t => (
+                            <MenuItem key={t.name} value={t.name}>{t.name}</MenuItem>
+                        ))}
                 </Select>
             </div>
             <div className={classes.columnContent}>
