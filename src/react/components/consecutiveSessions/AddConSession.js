@@ -1,26 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, IconButton, Typography } from '@material-ui/core';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import {
+    Button, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Card, Select, MenuItem
+} from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
-import Card from '@material-ui/core/Card';
 import AddIcon from '@material-ui/icons/Add';
-
-import { channels } from '../../../shared/constants';
-import Paper from "@material-ui/core/Paper";
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import TableBody from "@material-ui/core/TableBody";
-import Grid from "@material-ui/core/Grid";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import TableContainer from "@material-ui/core/TableContainer";
-const { ipcRenderer } = window.require('electron');
 
 const useStyles = makeStyles((theme) => ({
     row: {
@@ -39,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: theme.spacing(1),
         paddingBottom: theme.spacing(1),
         minWidth: 200,
+    },
+    columnContent: {
+        margin: theme.spacing(2),
     },
     myRowInputs: {
         display: 'flex',
@@ -59,12 +46,11 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-export default function AddConSession() {
+export default function AddConSession({
+    sessions, sessionA, setSessionA, sessionB, setSessionB, conSessionAddSuccess, handleSubmit, setConSessionAddSuccess
+}) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
-
-    const [ConSessionAddSuccess, setConSessionAddSuccess] = React.useState({ type: 'info', msg: 'Enter Session Info' });
-
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -89,41 +75,62 @@ export default function AddConSession() {
                 <DialogTitle id="form-dialog-title">Add Consecutive Session</DialogTitle>
                 <DialogContent className={classes.row}>
                     <Card className={classes.sides} variant="outlined">
-                        <TableContainer component={Paper}>
-                            <Table className={classes.table} aria-label="sessions table">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell align="left">Lecturers</TableCell>
-                                        <TableCell align="left">Subject</TableCell>
-                                        <TableCell align="left">Subject Code</TableCell>
-                                        <TableCell align="left">Tag</TableCell>
-                                        <TableCell align="left">Group Id / Sub Group Id</TableCell>
-                                        <TableCell align="left">Student Count</TableCell>
-                                        <TableCell align="left">Duration</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    <TableRow >
-                                            <TableCell>Lecturers</TableCell>
-                                            <TableCell align="right">Subject</TableCell>
-                                            <TableCell align="right">Subject Code</TableCell>
-                                            <TableCell align="right">Tag</TableCell>
-                                            <TableCell align="right">Group Id / Sub Group Id</TableCell>
-                                            <TableCell align="right">Student Count</TableCell>
-                                            <TableCell align="right">Duration</TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+                        <div className={classes.columnContent}>
+                            <Select
+                                labelId="session-select-label"
+                                id="session-select"
+                                value={sessionA}
+                                style={{ width: 300 }}
+                                onChange={(e) => setSessionA(e.target.value)}
+                            >
+                                {sessions.map(se => (
+                                    <MenuItem key={se.id} value={se.id}>
+                                        {se.lecName.map(ln => (` ${ln} /`))}
+                                        <br />
+                                        {se.subName}
+                                        <br />
+                                        {se.tag}
+                                        <br />
+                                        {se.groupIdSub}
+                                        <br />
+                                        {se.studentCount} ({se.Duration})
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </div>
+                        <div className={classes.columnContent}>
+                            <Select
+                                labelId="session-select-label"
+                                id="session-select"
+                                value={sessionB}
+                                style={{ width: 300 }}
+                                onChange={(e) => setSessionB(e.target.value)}
+                            >
+                                {sessions.map(se => (
+                                    <MenuItem key={se.id} value={se.id}>
+                                        {se.lecName.map(ln => (` ${ln} /`))}
+                                        <br />
+                                        {se.subName}
+                                        <br />
+                                        {se.tag}
+                                        <br />
+                                        {se.groupIdSub}
+                                        <br />
+                                        {se.studentCount} ({se.Duration})
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </div>
                         <Button
                             size="small"
                             variant="outlined"
+                            onClick={handleSubmit}
                         >
                             ADD
                         </Button>
                         <div className={classes.myAlert}>
-                            <Alert severity={ConSessionAddSuccess.type}>
-                                {ConSessionAddSuccess.msg}
+                            <Alert severity={conSessionAddSuccess.type}>
+                                {conSessionAddSuccess.msg}
                             </Alert>
                         </div>
                     </Card>

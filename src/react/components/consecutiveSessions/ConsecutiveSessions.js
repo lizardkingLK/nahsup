@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, IconButton } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
@@ -38,13 +38,15 @@ const createData = (lecName, tag, subName, subCode, groupIdSub, studentCount, Du
 
 const ConsecutiveSessions = () => {
     const classes = useStyles();
+    const [sessions, setSessions] = useState([]);
     const [ConSessions, setConSessions] = useState([]);
+    const [conSessionAddSuccess, setConSessionAddSuccess] = useState({ type: 'info', msg: 'Enter two sessions lecture & tute' });
 
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [ConSessionsPerPage] = useState(3);
-    const [selected, setSelected] = useState('');
-    const [editable, setEditable] = useState('');
+    const [sessionA, setSessionA] = useState('');
+    const [sessionB, setSessionB] = useState('');
 
     // get current sessions
     const indexOfLastSession = currentPage * ConSessionsPerPage;
@@ -56,11 +58,52 @@ const ConsecutiveSessions = () => {
         setCurrentPage(pageNumber);
     }
 
+    const handleSubmit = async () => {
+        if (sessionA.length === 0)
+            setConSessionAddSuccess({ type: 'warning', msg: 'Please Enter lecture ' })
+        else if (sessionB.length === 0)
+            setConSessionAddSuccess({ type: 'warning', msg: 'Please Enter tute' })
+        else {
+            console.log(sessionA)
+            console.log(sessionB)
+            ipcRenderer.send(channels.ADD_CONSECUTIVE, { load: { A: sessionA, B: sessionB } });
+            await ipcRenderer.on(channels.ADD_CONSECUTIVE, (event, arg) => {
+                ipcRenderer.removeAllListeners(channels.ADD_CONSECUTIVE);
+                const { success } = arg;
+                if (success) {
+                    setConSessionAddSuccess({
+                        type: 'success',
+                        msg: `Consecutive Session Added Successfully`
+                    });
+                    setSessionA('');
+                    setSessionB('');
+                }
+                else {
+                    setConSessionAddSuccess({
+                        type: 'error',
+                        msg: `Consecutive Sesson Not Added`
+                    });
+                    setSessionA('');
+                    setSessionB('');
+                }
+            })
+        }
+    }
+
+    const fetchSessions = async () => {
+        await ipcRenderer.send(channels.LOAD_SESSIONS);
+
+        ipcRenderer.on(channels.LOAD_SESSIONS, (event, arg) => {
+            ipcRenderer.removeAllListeners(channels.LOAD_SESSIONS);
+            const rs = arg;
+            setSessions(rs);
+        });
+    }
 
     // useeffect => runs when mounted and also when content gets updated
-    useEffect(() =>  {
-
-    },[]);
+    useEffect(() => {
+        fetchSessions();
+    }, []);
 
     // refresh table
     const sessionsUpdated = () => {
@@ -72,12 +115,9 @@ const ConsecutiveSessions = () => {
 
     }
 
-
-
     return (
         <div className="sessions">
             <div className={classes.row}>
-
                 <IconButton
                     size="small"
                     color="primary"
@@ -111,12 +151,19 @@ const ConsecutiveSessions = () => {
                 />
             </div>
 
-
             <div className={classes.row}>
                 <AddConSession
+                    sessions={sessions}
+                    sessionA={sessionA}
+                    setSessionA={setSessionA}
+                    sessionB={sessionB}
+                    setSessionB={setSessionB}
+                    conSessionAddSuccess={conSessionAddSuccess}
+                    handleSubmit={handleSubmit}
+                    setConSessionAddSuccess={setConSessionAddSuccess}
                 />
 
-                <DeleteConSession  />
+                <DeleteConSession />
             </div>
         </div>
     )

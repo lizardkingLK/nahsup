@@ -12,6 +12,7 @@ const TagDao = require('./TagDao')
 const PreferenceDao = require('./PreferenceDao')
 const LecturerDao = require('./LecturerDao')
 const SessionDao = require('./SessionDao')
+const ConsecutiveDao = require('./ConsecutiveDao')
 
 let win
 
@@ -423,6 +424,17 @@ ipcMain.on(channels.ADD_STUDENT, async (event, arg) => {
     })
 })
 
+ipcMain.on(channels.EDIT_STUDENT, async (event, arg) => {
+    const { yearNo, semNo, programmeName, groupId, subGroupId, id } = arg
+    await StudentDao.editStudent
+        (yearNo, semNo, programmeName, groupId, subGroupId, id, function (r) {
+            const { success } = r
+            event.sender.send(channels.EDIT_STUDENT, {
+                success: success
+            })
+        })
+})
+
 ipcMain.on(channels.LOAD_STUDENTS, async (event) => {
     await StudentDao.loadStudents(function (rs) {
         const rsArray = rs.map(r => {
@@ -431,8 +443,10 @@ ipcMain.on(channels.LOAD_STUDENTS, async (event) => {
             const programme = r.programme
             const group = r.group
             const subGroup = r.subGroup
+            const groupIdLabel = r.groupIdLabel
+            const subGroupIdLabel = r.subGroupIdLabel
             const id = r._id.toString()
-            return ({ year, sem, programme, group, subGroup, id })
+            return ({ year, sem, programme, group, subGroup, groupIdLabel, subGroupIdLabel, id })
         })
         event.sender.send(channels.LOAD_STUDENTS, rsArray)
     })
@@ -451,6 +465,21 @@ ipcMain.on(channels.SEARCH_STUDENTS, async (event, arg) => {
             return ({ year, sem, programme, group, subGroup, id })
         })
         event.sender.send(channels.SEARCH_STUDENTS, rsArray)
+    })
+})
+
+// consecutive
+ipcMain.on(channels.ADD_CONSECUTIVE, async (event, arg) => {
+    const { load } = arg
+    await ConsecutiveDao.addConSession(load, function (r) {
+        if (r)
+            event.sender.send(channels.ADD_CONSECUTIVE, {
+                success: true
+            })
+        else
+            event.sender.send(channels.ADD_CONSECUTIVE, {
+                success: false
+            })
     })
 })
 

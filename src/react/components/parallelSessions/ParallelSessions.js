@@ -1,6 +1,6 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, IconButton } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
@@ -58,9 +58,9 @@ const ParallelSessions = () => {
 
 
     // useeffect => runs when mounted and also when content gets updated
-    useEffect(() =>  {
+    useEffect(() => {
 
-    },[]);
+    }, []);
 
     // refresh table
     const sessionsUpdated = () => {
@@ -116,7 +116,7 @@ const ParallelSessions = () => {
                 <AddParSession
                 />
 
-                <DeleteParSession  />
+                <DeleteParSession />
             </div>
         </div>
     )

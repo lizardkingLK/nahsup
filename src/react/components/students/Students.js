@@ -8,6 +8,7 @@ import Table from './Table';
 import Pagination from './Pagination';
 import AddStudent from './AddStudent';
 import DeleteStudent from './DeleteStudent';
+import EditStudent from './EditStudent';
 
 import { channels } from '../../../shared/constants';
 const { ipcRenderer } = window.require('electron');
@@ -43,6 +44,7 @@ const Students = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [studentsPerPage] = useState(5);
     const [selected, setSelected] = useState('');
+    const [editable, setEditable] = useState('');
 
     // get current students
     const indexOfLastStudent = currentPage * studentsPerPage;
@@ -78,8 +80,11 @@ const Students = () => {
 
     // selected student changed
     const handleRadioChange = (value) => {
-        console.log(value);
         setSelected(value);
+        let tStudents = students;
+        const edit = tStudents.filter(s => (s.id === value))[0];
+        setEditable(edit);
+        console.log(edit)
     }
 
 
@@ -141,6 +146,16 @@ const Students = () => {
             </div>
 
             <div className={classes.row}>
+                <EditStudent
+                    selected={selected}
+                    studentsUpdated={studentsUpdated}
+                    year={editable.year}
+                    sem={editable.sem}
+                    programme={editable.programme}
+                    group={editable.group}
+                    subGroup={editable.subGroup}
+                    id={editable.id}
+                />
                 <DeleteStudent selected={selected} studentsUpdated={studentsUpdated} />
                 <AddStudent studentsUpdated={studentsUpdated} />
             </div>
@@ -148,8 +163,5 @@ const Students = () => {
         </div>
     )
 }
-
-
-
 
 export default Students

@@ -70,5 +70,8 @@ module.exports = {
         LOAD_SUBGROUPID: 'load_subgroupid',
         FIND_GROUPID: 'find_groupid',
         FIND_SUBGROUPID: 'find_subgroupid',
+        // consecutive sessions
+        ADD_CONSECUTIVE: 'add_consecutive',
+        LOAD_CONSECUTIVE: 'load_consecutive',
     },
 };

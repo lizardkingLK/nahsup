@@ -117,6 +117,25 @@ const StudentDao = {
                 callback({ success: false })
             })
     },
+
+    // EDIT STUDENT
+    editStudent: (yearNo, semNo, programmeName, groupId, subGroupId, id, callback) => {
+        Student.findOneAndUpdate({ _id: id }, {
+            $set: {
+                year: yearNo,
+                sem: semNo,
+                programme: programmeName,
+                group: groupId,
+                subGroup: subGroupId
+            }
+        }, { useFindAndModify: false })
+            .then(() => {
+                callback({ success: true })
+            }).catch(err => {
+                console.error(err);
+                callback({ success: false })
+            })
+    },
 }
 
 module.exports = StudentDao
