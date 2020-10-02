@@ -15,6 +15,7 @@ const LocationDao = {
             lecturers: preference.lecturers,
             groups: preference.groups,
             sessions: preference.sessions,
+            unavailabilities: preference.unavailabilities,
             lastUpdated: preference.lastUpdated
         })
 

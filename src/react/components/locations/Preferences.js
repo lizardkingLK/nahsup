@@ -544,6 +544,7 @@ export default function Preferences({ locations, tags, subjects, lecturers, grou
                 else if (unavailableTimeT.length === 0)
                     setUnavailableSpecificAddSuccess({ type: 'warning', msg: 'End Time not selected' });
                 else {
+                    console.log('here find room')
                     // finds if the preference for room has added before
                     ipcRenderer.send(channels.FIND_PREFERENCE, { rID: roomU });
                     await ipcRenderer.on(channels.FIND_PREFERENCE, async (event, arg) => {
@@ -572,6 +573,7 @@ export default function Preferences({ locations, tags, subjects, lecturers, grou
                                         msg: `Preference Editted Successfully. ${unavailableDay} 
                                         from ${unavailableTimeF} to ${unavailableTimeT} for ${roomU}`
                                     });
+                                    setRoomU('');
                                     setUnavailableDay('');
                                     setUnavailableTimeF('');
                                     setUnavailableTimeT('');
@@ -584,6 +586,7 @@ export default function Preferences({ locations, tags, subjects, lecturers, grou
                                         msg: `Preference Already Available for ${unavailableDay} 
                                         from ${unavailableTimeF} to ${unavailableTimeT} for ${roomU}`
                                     });
+                                    setRoomU('');
                                     setUnavailableDay('');
                                     setUnavailableTimeF('');
                                     setUnavailableTimeT('');
@@ -614,6 +617,7 @@ export default function Preferences({ locations, tags, subjects, lecturers, grou
                                         msg: `Preference Added Successfully. ${unavailableDay} 
                                         from ${unavailableTimeF} to ${unavailableTimeT} for ${roomU}`
                                     });
+                                    setRoomU('');
                                     setUnavailableDay('');
                                     setUnavailableTimeF('');
                                     setUnavailableTimeT('');
@@ -625,6 +629,7 @@ export default function Preferences({ locations, tags, subjects, lecturers, grou
                                         type: 'error',
                                         msg: `Preference Not Added`
                                     });
+                                    setRoomU('');
                                     setUnavailableDay('');
                                     setUnavailableTimeF('');
                                     setUnavailableTimeT('');

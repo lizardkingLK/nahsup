@@ -82,7 +82,6 @@ const Sessions = () => {
 
             ipcRenderer.on(channels.LOAD_LECTURERS, (event, arg) => {
                 ipcRenderer.removeAllListeners(channels.LOAD_LECTURERS);
-                console.log(arg)
                 setLc(arg);
             });
         }
@@ -94,7 +93,6 @@ const Sessions = () => {
 
             ipcRenderer.on(channels.LOAD_SUBJECTS, (event, arg) => {
                 ipcRenderer.removeAllListeners(channels.LOAD_SUBJECTS);
-                console.log(arg)
                 setSubjects(arg);
             });
         }
@@ -124,12 +122,10 @@ const Sessions = () => {
         let tSessions = sessions;
         const edit = tSessions.filter(l => (l.id === value))[0];
         setEditable(edit);
-        console.log(edit)
     }
 
     //  advanced search
     const searchFilter = async (value, context) => {
-        console.log(value)
         const newSessions = sessions;
         if (context === 'subject')
             setSessions(newSessions.filter(s => s.subName === value))

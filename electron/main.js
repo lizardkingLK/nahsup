@@ -34,9 +34,6 @@ function createWindow() {
             slashes: true
         }))
 
-    // Open the DevTools.
-    win.webContents.openDevTools()
-
     // Emitted when the window is closed.
     win.on('closed', async () => {
         // Dereference the window object, usually you would store windows
@@ -67,6 +64,13 @@ function createWindow() {
         {
             label: 'Help',
             submenu: [
+                {
+                    label: 'Toggle Developer Tools',
+                    click() {
+                        win.webContents.openDevTools()
+                    }
+                },
+                { type: 'separator' },
                 {
                     label: 'About',
                     click() {
@@ -742,8 +746,8 @@ ipcMain.on(channels.EDIT_PREFERENCE, async (event, arg) => {
                     })
             })
             break;
-        case 'UNAVAILABLES':
-            await PreferenceDao.editPreferenceOnUnavailables(load, function (s) {
+        case 'UNAVAILABILITIES':
+            await PreferenceDao.editPreferenceOnUnavailabilities(load, function (s) {
                 if (s)
                     event.sender.send(channels.EDIT_PREFERENCE, {
                         success: true
