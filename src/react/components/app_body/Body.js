@@ -28,6 +28,7 @@ import WorkingHours from '../workingHours/WorkingHours';
 import Unavailability from '../unAvailability/Unavailability';
 import ParallelSessions from '../parallelSessions/ParallelSessions';
 import ConsecutiveSessions from '../consecutiveSessions/ConsecutiveSessions';
+import GenerateTT from '../generateTT/generateTT';
 
 const drawerWidth = 240;
 
@@ -164,6 +165,12 @@ const tabs = [
         imgPath:
             require('../../images/unavail.svg'),
         component: Unavailability
+    },
+    {
+        label: 'Generate Time Table',
+        imgPath:
+            require('../../images/undraw_time_management_30iu.svg'),
+        component: GenerateTT
     }
 ]
 

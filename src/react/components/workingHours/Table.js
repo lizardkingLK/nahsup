@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle } from 'react';
+import React,{ forwardRef, useImperativeHandle } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-const SchedulesTable = forwardRef(({ schedules, loading, handleRadioChange }, ref) => {
+const SchedulesTable =forwardRef(({ schedules, loading, handleRadioChange },ref) => {
     const classes = useStyles();
     const [selectedValue, setSelectedValue] = React.useState('');
 
@@ -34,15 +34,15 @@ const SchedulesTable = forwardRef(({ schedules, loading, handleRadioChange }, re
                 setSelectedValue('');
             }
         }),
-    )
-
+    )   
+    
     const handleChange = (e) => {
         setSelectedValue(e.target.value);
         handleRadioChange(e.target.value);
     }
-
+   
     if (loading) {
-
+        
         return <Typography variant="caption" component="h3" >Loading Table...</Typography>
     }
 
@@ -66,7 +66,7 @@ const SchedulesTable = forwardRef(({ schedules, loading, handleRadioChange }, re
     }
     return (
         <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="locations table" size="small">
+            <Table className={classes.table} aria-label="locations table">
                 <TableHead>
                     <TableRow>
                         <TableCell></TableCell>

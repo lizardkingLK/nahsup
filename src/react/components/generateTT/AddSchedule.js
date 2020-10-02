@@ -11,7 +11,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Card from '@material-ui/core/Card';
-import EditIcon from '@material-ui/icons/Edit';
+import AddIcon from '@material-ui/icons/Add';
 import { KeyboardTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
 
@@ -51,176 +51,128 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-export default function EditSchedule({ selected, scheduleUpdated, setSelected, _id, dayCount, workingDays, stime, duration, wtime }) {
+export default function AddSchedule({ scheduleUpdated }) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
+    const [dayCount, setdayCount] = React.useState(0);
     const [wdays, setWdays] = React.useState([]);
-    const [edayCount, setdayCount] = React.useState('');
-    const [eduration, setDuration] = React.useState('');
-    const [scheduleEditSuccess, setScheduleEditSuccess] = React.useState({ type: 'info', msg: 'Enter Schedule Info.' });
-    const dayArr = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-    const [estime, setStime] = React.useState(new Date());
-    const [ewtime, setWtime] = React.useState(new Date());
-
+    const [duration, setDuration] = React.useState('One Hour');
+    const [scheduleAddSuccess, setScheduleAddSuccess] = React.useState({ type: 'info', msg: 'Enter Relavant Details.' });
+    const [dayArr, setDayArr] = React.useState(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]);
+    const [stime, setStime] = React.useState(new Date());
+    const [wtime, setWtime] = React.useState("2018-01-01T18:30:00.000Z");
     const handleClickOpen = () => {
         setOpen(true);
-        handleWorkingDays();
-        setStime(stime);
-        setWtime(wtime);
-        setdayCount(dayCount);
-        setDuration(duration);
     };
 
     const handleClose = () => {
         setOpen(false);
-        setScheduleEditSuccess({ type: 'info', msg: 'Enter Schedule Info.' });
+        setScheduleAddSuccess({ type: 'info', msg: 'Enter Relavant Details' });
     };
 
-    //Split working days from string and send to 'handleCheckBoxes'
-    const handleWorkingDays = () => {
-        const d_array = workingDays.split(',');
-        handleCheckBoxes(d_array);
-    };
-
-    //Create day objects and insert into wdays array
-    const handleCheckBoxes = (d_array) => {
-        var count = 0;
-        wdays.splice(0, 7);
-        dayArr.forEach(ele1 => {
-            if (d_array.includes(ele1)) {
-                const day = {
-                    id: wdays.length,
-                    name: ele1,
-                    check: true
-                }
-                wdays.push(day);
-                count++;
-            } else {
-                const day = {
-                    id: wdays.length,
-                    name: ele1,
-                    check: false
-                }
-                wdays.push(day);
-            }
-        });
-        setdayCount(count);
-        setWdays(wdays);
-    };
-
-    //Onclick Edit
-    const handleEditSchedule = async () => {
-        var workHrs = new Date(ewtime).getHours();
-        var workMins = new Date(ewtime).getMinutes();
+    //Onclick add
+    const handleAddSchedule = async () => {
+        var workHrs = new Date(wtime).getHours();
+        var workMins = new Date(wtime).getMinutes();
         //Taking array to a string
-        var eworkingDays = "";
+        var workingDays = "";
         wdays.forEach(ele => {
-            if (eworkingDays === "" && ele.check === true) {
-                eworkingDays = ele.name;
-            } else if (ele.check === true) {
-                eworkingDays = eworkingDays + ',' + ele.name;
+            if (workingDays === "") {
+                workingDays = ele;
+            } else {
+                workingDays = workingDays + ',' + ele;
             }
         });
         //validations
-        if (edayCount === 0)
-            setScheduleEditSuccess({ type: 'warning', msg: 'Please select at least one working day!' });
+        if (dayCount === 0)
+            setScheduleAddSuccess({ type: 'warning', msg: 'Please select at least one working day!' });
         else if (workHrs >= 14)
-            setScheduleEditSuccess({ type: 'warning', msg: 'Working time must be less than 14:00 Hrs' });
+            setScheduleAddSuccess({ type: 'warning', msg: 'Working time must be less than 14:00 Hrs' });
         else if (workHrs === 0 && workMins === 0)
-            setScheduleEditSuccess({ type: 'warning', msg: 'Please select Working time' });
+            setScheduleAddSuccess({ type: 'warning', msg: 'Please select Working time' });
         else if (workHrs < 2)
-            setScheduleEditSuccess({ type: 'warning', msg: 'Working time is too small' });
+            setScheduleAddSuccess({ type: 'warning', msg: 'Working time is too small' });
         else {
             //Save to database
-            ipcRenderer.send(channels.EDIT_SCHEDULE, { _id, edayCount, eworkingDays, estime, eduration, ewtime });
-            scheduleUpdated();
-            await ipcRenderer.on(channels.EDIT_SCHEDULE, (event, arg) => {
-                ipcRenderer.removeAllListeners(channels.EDIT_SCHEDULE);
+            ipcRenderer.send(channels.ADD_SCHEDULE, { dayCount, workingDays, stime, duration, wtime });
+            await ipcRenderer.on(channels.ADD_SCHEDULE, (event, arg) => {
+                ipcRenderer.removeAllListeners(channels.ADD_SCHEDULE);
                 const { success } = arg;
                 if (success) {
-                    setScheduleEditSuccess({ type: 'success', msg: 'Schedule edited.' });
+                    setScheduleAddSuccess({ type: 'success', msg: `Schedule added!` });
                     setdayCount(0);
                     setDuration("One Hour");
+                    scheduleUpdated();
+                    setWdays([]);
                     setStime("2018-01-01T18:30:00.000Z");
                     setWtime("2018-01-01T18:30:00.000Z");
-                    setSelected('');
-                    uncheckCheckBoxes();
-                    scheduleUpdated();
+                    //Uncheck checkBoxes after edit
+                    setDayArr([]);
+                    setDayArr(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]);
                 }
                 else
-                    setScheduleEditSuccess({ type: 'error', msg: 'Schedule not edited' });
+                    setScheduleAddSuccess({ type: 'error', msg: 'Schedule not added' });
             })
         }
     }
 
-    //Uncheck all checkBoxes when edited
-    const uncheckCheckBoxes = () => {
-        wdays.map((item) => {
-            item.check = false;
-        })
-        setWdays([...wdays]);
-    }
-
-    //Handle checkbox selections
-    const handleDaySelect = (event, id) => {
-        var count = 0;
-        wdays.map(item => {
-            if (item.id === id) {
-                if (item.check === false) {
-                    item.check = true;
-                } else {
-                    item.check = false;
-                }
-            }
-            if (item.check === true) {
-                count++;
-            }
-        })
-        setWdays([...wdays]);
-        setdayCount(count);
-    }
-
     //CheckBox list render
-    let daysOptions = wdays.map((cur) => {
+    const daysOptions = dayArr.map((cur, ind) => {
         return (
-            <InputLabel key={cur.id} className={classes.myRowInput}>
+            <InputLabel key={ind} id="roomType-simple-select-label" className={classes.myRowInput}>
                 <Checkbox
                     size="small"
                     color="primary"
-                    name={cur.name}
-                    checked={cur.check}
-                    onChange={(e) => handleDaySelect(e, cur.id)}
+                    name={cur}
+                    value={cur}
+                    onChange={(e) => handleDaySelect(e)}
                 />
-                {cur.name}
+                {cur}
             </InputLabel>
-        )
-    }
-    );
 
+        )
+    })
+
+    //CheckBox on change
+    const handleDaySelect = (event) => {
+        let check = event.target.checked;
+        let checked_day = event.target.value;
+
+        if (check) {
+            setWdays([...wdays, checked_day]);
+            setdayCount(wdays.length + 1);
+        } else {
+            var index = wdays.indexOf(checked_day);
+            if (index > -1) {
+                wdays.splice(index, 1);
+                setWdays([...wdays]);
+                setdayCount(wdays.length);
+            }
+        }
+    }
     return (
+
         <div>
             <IconButton
                 size="medium"
                 color="primary"
                 component="span"
-                disabled={selected === ''}
                 onClick={handleClickOpen}
             >
-                <EditIcon />
+                <AddIcon />
             </IconButton>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Edit Schedule</DialogTitle>
+                <DialogTitle id="form-dialog-title">Add Schedule</DialogTitle>
                 <DialogContent className={classes.row}>
                     <Card className={classes.sides} variant="outlined">
-
                         <TextField
-                            label="Number of Working days(Selected Automatically)"
                             margin="dense"
                             id="capacity"
+                            label="Number of Working days(Selected Automatically)"
                             type="text"
                             name="dayCount"
+                            value={dayCount}
                             disabled={true}
-                            value={edayCount}
                             onChange={(e) => setdayCount(e.target.value)}
                             className={classes.myInput}
                             fullWidth
@@ -231,7 +183,7 @@ export default function EditSchedule({ selected, scheduleUpdated, setSelected, _
                                     label="Start Time"
                                     placeholder="08:00 AM"
                                     mask="__:__ _M"
-                                    value={estime}
+                                    value={stime}
                                     onChange={date => setStime(date)}
                                     fullWidth
 
@@ -252,13 +204,15 @@ export default function EditSchedule({ selected, scheduleUpdated, setSelected, _
                                     placeholder="00:00"
                                     format="HH:mm"
                                     mask="__:__"
-                                    value={ewtime}
+                                    openTo={"hours"}
+                                    value={wtime}
                                     onChange={date => setWtime(date)}
                                     fullWidth
                                 />
                             </MuiPickersUtilsProvider>
 
                         </div>
+
                         <div className={classes.myInput}>
                             <InputLabel id="building-simple-select-label">
                                 <Typography variant="caption" component="h6">
@@ -269,7 +223,7 @@ export default function EditSchedule({ selected, scheduleUpdated, setSelected, _
                                 labelId="building-simple-select-label"
                                 id="building-simple-select"
                                 className={classes.myInput}
-                                value={eduration}
+                                value={duration}
                                 onChange={(e) => setDuration(e.target.value)}
                                 fullWidth
                             >
@@ -278,23 +232,24 @@ export default function EditSchedule({ selected, scheduleUpdated, setSelected, _
                             </Select>
                         </div>
                     </Card>
+
                     <Card className={classes.sides} variant="outlined">
                         <Typography variant="caption" component="h6">
                             Select Working Days
-                        </Typography>
+                    </Typography>
                         {daysOptions}
                     </Card>
                 </DialogContent>
                 <Button
                     size="small"
                     variant="outlined"
-                    onClick={handleEditSchedule}
+                    onClick={handleAddSchedule}
                 >
-                    Edit
-                        </Button>
+                    ADD
+                </Button>
                 <div className={classes.myAlert}>
-                    <Alert severity={scheduleEditSuccess.type}>
-                        {scheduleEditSuccess.msg}
+                    <Alert severity={scheduleAddSuccess.type}>
+                        {scheduleAddSuccess.msg}
                     </Alert>
                 </div>
                 <DialogActions>
