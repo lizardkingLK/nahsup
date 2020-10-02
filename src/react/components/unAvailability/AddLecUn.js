@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-export default function AddLecUn({ lecturers }) {
+export default function AddLecUn({ lecturers, sessionsUpdated }) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [lecturer, setLecturer] = React.useState('');
@@ -97,6 +97,7 @@ export default function AddLecUn({ lecturers }) {
                     setUnavailableDay('');
                     setUnavailableTimeF('');
                     setUnavailableTimeT('');
+                    sessionsUpdated('Lecturer');
                 }
                 else {
                     setLecUnAddSuccess({

@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-export default function AddLecUn({ subGroupIds }) {
+export default function AddLecUn({ subGroupIds, sessionsUpdated }) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [subGroupId, setSubGroupId] = React.useState('');
@@ -97,6 +97,7 @@ export default function AddLecUn({ subGroupIds }) {
                     setUnavailableDay('');
                     setUnavailableTimeF('');
                     setUnavailableTimeT('');
+                    sessionsUpdated('SubGroupId');
                 }
                 else {
                     setSuGroUnAddSuccess({

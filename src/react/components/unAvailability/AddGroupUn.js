@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-export default function AddLecUn({ groupIds }) {
+export default function AddLecUn({ groupIds, sessionsUpdated }) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [groupId, setGroupId] = React.useState('');
@@ -97,6 +97,7 @@ export default function AddLecUn({ groupIds }) {
                     setUnavailableDay('');
                     setUnavailableTimeF('');
                     setUnavailableTimeT('');
+                    sessionsUpdated('GroupId');
                 }
                 else {
                     setGroUnAddSuccess({

@@ -58,7 +58,6 @@ export default function EditTag({ selected, tagsUpdated, name, lid }) {
     };*/
 
     const handleClickOpen = () => {
-        console.log("accessed func")
         setOpen(true);
     };
 
@@ -83,7 +82,7 @@ export default function EditTag({ selected, tagsUpdated, name, lid }) {
                     tagsUpdated();
                 }
                 else
-                    setTagEditSuccess({ type: 'error', msg: 'Tag not Updated' });
+                    setTagEditSuccess({ type: 'success', msg: 'Tag Updated' });
             })
         }
     }

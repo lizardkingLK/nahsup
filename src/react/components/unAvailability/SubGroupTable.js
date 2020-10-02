@@ -1,14 +1,8 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Radio from '@material-ui/core/Radio';
-import Typography from '@material-ui/core/Typography';
+import {
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Grid, List, ListItem
+} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     row: {
@@ -23,34 +17,37 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-const Posts = ({ loading, handleRadioChange }) => {
+const Posts = ({ subGroupIds }) => {
     const classes = useStyles();
-    const [selectedValue, setSelectedValue] = React.useState('');
-
-    const handleChange = (e) => {
-        setSelectedValue(e.target.value);
-        handleRadioChange(e.target.value);
-    }
-
-    if (loading) {
-        return <Typography variant="caption" component="h3" >Loading Table...</Typography>
-    }
 
     return (
         <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="lecturers table">
+            <Table className={classes.table} aria-label="sessions table" size="small">
                 <TableHead>
                     <TableRow>
-                        <TableCell>Sub Group Id</TableCell>
+                        <TableCell>SubGroupId</TableCell>
                         <TableCell align="right">Unavailable Time Slot</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    <TableRow>
-                        <TableCell >ssd</TableCell>
-                        <TableCell align="right">3-5</TableCell>
-                    </TableRow>
-
+                    {subGroupIds.map(row => (
+                        <TableRow key={row.id}>
+                            <TableCell component="th" scope="row">
+                                <Grid item xs={12} md={6}>
+                                    <div className={classes.demo}>
+                                        <List>
+                                            <ListItem>
+                                                {row.subGroupId}
+                                            </ListItem>
+                                        </List>
+                                    </div>
+                                </Grid>
+                            </TableCell>
+                            <TableCell align="right">
+                                {`${row.unavailableHours?.day} ${row.unavailableHours?.from} - ${row.unavailableHours?.to}`}
+                            </TableCell>
+                        </TableRow>
+                    ))}
                 </TableBody>
             </Table>
         </TableContainer>

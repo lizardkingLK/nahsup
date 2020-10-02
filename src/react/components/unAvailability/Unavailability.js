@@ -42,8 +42,6 @@ const useStyles = makeStyles((theme) => ({
 const Unavailability = () => {
     const classes = useStyles();
     const [context, setContext] = useState('Lecturer');
-    const [groupIds, setGroupIds] = useState([]);
-    const [subGroupIds, setSubGroupIds] = useState([]);
 
     // lecturers + table + pagination
     const [lecturers, setLecturers] = useState([]);
@@ -80,6 +78,8 @@ const Unavailability = () => {
     const currentSessions = sessions.slice(indexOfFirstSession, indexOfLastSession);
     const paginateSe = (pageNumber) => setCurrentPageSe(pageNumber);
 
+    // groupIds + table + pagination
+    const [groupIds, setGroupIds] = useState([]);
     const fetchGroupIds = async () => {
         await ipcRenderer.send(channels.LOAD_GROUPID);
 
@@ -89,7 +89,15 @@ const Unavailability = () => {
             setGroupIds(rs);
         });
     }
+    const [currentPageGr, setCurrentPageGr] = useState(1);
+    const [groupIdsPerPage] = useState(5);
+    const indexOfLastGroupId = currentPageGr * groupIdsPerPage;
+    const indexOfFirstGroupId = indexOfLastGroupId - groupIdsPerPage;
+    const currentGroupIds = groupIds.slice(indexOfFirstGroupId, indexOfLastGroupId);
+    const paginateGr = (pageNumber) => setCurrentPageGr(pageNumber);
 
+    // subGroupIds + table + pagination
+    const [subGroupIds, setSubGroupIds] = useState([]);
     const fetchSubGroupIds = async () => {
         await ipcRenderer.send(channels.LOAD_SUBGROUPID);
 
@@ -99,6 +107,12 @@ const Unavailability = () => {
             setSubGroupIds(rs);
         });
     }
+    const [currentPageSGr, setCurrentPageSGr] = useState(1);
+    const [subGroupIdsPerPage] = useState(5);
+    const indexOfLastSubGroupId = currentPageSGr * subGroupIdsPerPage;
+    const indexOfFirstSubGroupId = indexOfLastSubGroupId - subGroupIdsPerPage;
+    const currentSubGroupIds = subGroupIds.slice(indexOfFirstSubGroupId, indexOfLastSubGroupId);
+    const paginateSGr = (pageNumber) => setCurrentPageSGr(pageNumber);
 
     // useeffect => runs when mounted and also when content gets updated
     useEffect(() => {
@@ -208,7 +222,7 @@ const Unavailability = () => {
                         />
                     </div>
                     <div className={classes.row}>
-                        <AddLecUn lecturers={lecturers} />
+                        <AddLecUn lecturers={lecturers} sessionsUpdated={sessionsUpdated} />
                     </div>
                 </>
             ) : context === 'Session' ? (
@@ -224,29 +238,39 @@ const Unavailability = () => {
                         />
                     </div>
                     <div className={classes.row}>
-                        <AddSesUn sessions={sessions} />
+                        <AddSesUn sessions={sessions} sessionsUpdated={sessionsUpdated} />
                     </div>
                 </>
             ) : context === 'GroupId' ? (
                 <>
                     <div className={classes.row}>
-                        <GroupTable
-
+                        <GroupTable groupIds={currentGroupIds} />
+                    </div>
+                    <div className={classes.row}>
+                        <Pagination
+                            rowsPerPage={groupIdsPerPage}
+                            totalRows={groupIds.length}
+                            paginate={paginateGr}
                         />
                     </div>
                     <div className={classes.row}>
-                        <AddGroupUn groupIds={groupIds} />
+                        <AddGroupUn groupIds={groupIds} sessionsUpdated={sessionsUpdated} />
                     </div>
                 </>
             ) : (
                             <>
                                 <div className={classes.row}>
-                                    <SubGroupTable
-
+                                    <SubGroupTable subGroupIds={currentSubGroupIds} />
+                                </div>
+                                <div className={classes.row}>
+                                    <Pagination
+                                        rowsPerPage={subGroupIdsPerPage}
+                                        totalRows={subGroupIds.length}
+                                        paginate={paginateSGr}
                                     />
                                 </div>
                                 <div className={classes.row}>
-                                    <AddSubGroupUn subGroupIds={subGroupIds} />
+                                    <AddSubGroupUn subGroupIds={subGroupIds} sessionsUpdated={sessionsUpdated} />
                                 </div>
                             </>
                         )}
