@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import { IconButton } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
+import { IconButton, TextField } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 import Table from './Table';
@@ -9,8 +8,8 @@ import Pagination from './Pagination';
 import AddParSession from "./AddParSession";
 import DeleteParSession from "./DeleteParSession";
 
-import { channels } from '../../../shared/constants';
-const { ipcRenderer } = window.require('electron');
+// import { channels } from '../../../shared/constants';
+// const { ipcRenderer } = window.require('electron');
 
 const useStyles = makeStyles((theme) => ({
     row: {
@@ -38,13 +37,13 @@ const createData = (lecName, tag, subName, subCode, groupIdSub, studentCount, Du
 
 const ParallelSessions = () => {
     const classes = useStyles();
-    const [ParSessions, setParSessions] = useState([]);
+    const [ParSessions, setParSessions] = React.useState([]);
 
-    const [loading, setLoading] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [ParSessionsPerPage] = useState(3);
-    const [selected, setSelected] = useState('');
-    const [editable, setEditable] = useState('');
+    const [loading, setLoading] = React.useState(false);
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const [ParSessionsPerPage] = React.useState(3);
+    const [selected, setSelected] = React.useState('');
+    const [editable, setEditable] = React.useState('');
 
     // get current sessions
     const indexOfLastSession = currentPage * ParSessionsPerPage;
@@ -58,7 +57,7 @@ const ParallelSessions = () => {
 
 
     // useeffect => runs when mounted and also when content gets updated
-    useEffect(() => {
+    React.useEffect(() => {
 
     }, []);
 

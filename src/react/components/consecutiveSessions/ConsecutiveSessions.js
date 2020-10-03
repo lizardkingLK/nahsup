@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, IconButton } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
+import { IconButton, TextField } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 import Table from './Table';
@@ -38,15 +37,15 @@ const createData = (lecName, tag, subName, subCode, groupIdSub, studentCount, Du
 
 const ConsecutiveSessions = () => {
     const classes = useStyles();
-    const [sessions, setSessions] = useState([]);
-    const [ConSessions, setConSessions] = useState([]);
-    const [conSessionAddSuccess, setConSessionAddSuccess] = useState({ type: 'info', msg: 'Enter two sessions lecture & tute' });
+    const [sessions, setSessions] = React.useState([]);
+    const [ConSessions, setConSessions] = React.useState([]);
+    const [conSessionAddSuccess, setConSessionAddSuccess] = React.useState({ type: 'info', msg: 'Enter two sessions lecture & tute' });
 
-    const [loading, setLoading] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [ConSessionsPerPage] = useState(3);
-    const [sessionA, setSessionA] = useState('');
-    const [sessionB, setSessionB] = useState('');
+    const [loading, setLoading] = React.useState(false);
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const [ConSessionsPerPage] = React.useState(3);
+    const [sessionA, setSessionA] = React.useState('');
+    const [sessionB, setSessionB] = React.useState('');
 
     // get current sessions
     const indexOfLastSession = currentPage * ConSessionsPerPage;
@@ -101,7 +100,7 @@ const ConsecutiveSessions = () => {
     }
 
     // useeffect => runs when mounted and also when content gets updated
-    useEffect(() => {
+    React.useEffect(() => {
         fetchSessions();
     }, []);
 

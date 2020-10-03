@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from 'react'
+import React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import { IconButton } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -31,19 +31,19 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-const createData = (_id, dayCount,workingDays,stime,duration,wtime) => {
-    return { _id, dayCount,workingDays,stime,duration,wtime};
+const createData = (_id, dayCount, workingDays, stime, duration, wtime) => {
+    return { _id, dayCount, workingDays, stime, duration, wtime };
 }
 
 const WorkingHours = () => {
     const classes = useStyles();
-    const [schedules, setSchedules] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [schedulesPerPage] = useState(3);
-    const [selected, setSelected] = useState('');
-    const [editable, setEditable] = useState('');
-    const childRef = useRef();
+    const [schedules, setSchedules] = React.useState([]);
+    const [loading, setLoading] = React.useState(false);
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const [schedulesPerPage] = React.useState(3);
+    const [selected, setSelected] = React.useState('');
+    const [editable, setEditable] = React.useState('');
+    const childRef = React.useRef();
     // get current Schedules
     const indexOfLastSchedule = currentPage * schedulesPerPage;
     const indexOfFirstSchedule = indexOfLastSchedule - schedulesPerPage;
@@ -61,21 +61,18 @@ const WorkingHours = () => {
         ipcRenderer.on(channels.LOAD_SCHEDULE, (event, arg) => {
             ipcRenderer.removeAllListeners(channels.LOAD_SCHEDULE);
             const sh = arg;
-            const shArray = sh.map(s => createData(s._id, s.dayCount,s.workingDays,s.stime,s.duration,s.wtime))
+            const shArray = sh.map(s => createData(s._id, s.dayCount, s.workingDays, s.stime, s.duration, s.wtime))
             setSchedules(shArray);
-            
+
         });
         setLoading(false);
         console.log(schedules);
         childRef.current.resetSelected();
     }
 
-   
-
     // useeffect => runs when mounted and also when content gets updated
-    useEffect(() => {
+    React.useEffect(() => {
         fetchSchedules();
-      
     }, []);
 
     // refresh table

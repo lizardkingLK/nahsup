@@ -1,18 +1,8 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Radio from '@material-ui/core/Radio';
-import Typography from '@material-ui/core/Typography';
-import List from "@material-ui/core/List";
-import Grid from "@material-ui/core/Grid";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
+import {
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, List, Grid, ListItem
+} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     row: {
@@ -29,12 +19,6 @@ const useStyles = makeStyles((theme) => ({
 
 const Posts = ({ loading, handleRadioChange }) => {
     const classes = useStyles();
-    const [selectedValue, setSelectedValue] = React.useState('');
-
-    const handleChange = (e) => {
-        setSelectedValue(e.target.value);
-        handleRadioChange(e.target.value);
-    }
 
     if (loading) {
         return <Typography variant="caption" component="h3" >Loading Table...</Typography>
@@ -51,7 +35,7 @@ const Posts = ({ loading, handleRadioChange }) => {
                 <TableBody>
                     <TableRow >
                         <TableCell component="th" scope="row">
-                            <Grid  item xs={12} md={6}>
+                            <Grid item xs={12} md={6}>
                                 <div className={classes.demo}>
                                     <List >
                                         <ListItem>

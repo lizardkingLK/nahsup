@@ -1,15 +1,6 @@
-import React, { forwardRef, useEffect } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { DataGrid } from '@material-ui/data-grid';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Radio from '@material-ui/core/Radio';
-import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
     row: {
@@ -24,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 const arr1 = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const TimeTable = forwardRef(({ schedule, loading, sessions, handleRadioChange }, ref) => {
+const TimeTable = React.forwardRef(({ schedule, loading, sessions, handleRadioChange }, ref) => {
     const classes = useStyles();
     const [selectedValue, setSelectedValue] = React.useState('');
     const [workingDays, setWorkingDays] = React.useState([]);
@@ -41,7 +32,7 @@ const TimeTable = forwardRef(({ schedule, loading, sessions, handleRadioChange }
     ];
 
 
-    useEffect(() => {
+    React.useEffect(() => {
         // if(schedule.count()>0){
         heading();
         console.log(sessions);
@@ -73,7 +64,7 @@ const TimeTable = forwardRef(({ schedule, loading, sessions, handleRadioChange }
 
         arr1.forEach(data => {
             workingDays.forEach(item => {
-                if (data == item) {
+                if (data === item) {
                     var col = { field: data, headerName: data, width: 130 };
                     setColumns(oldArray => [...oldArray, col]);
 
@@ -90,11 +81,11 @@ const TimeTable = forwardRef(({ schedule, loading, sessions, handleRadioChange }
 
         let dura = 0;
         var noOfSlots = 0;
-        if (schedule[0].duration == "One Hour") {
+        if (schedule[0].duration === "One Hour") {
             dura = 60;
         }
 
-        else if (schedule[0].duration == "Thirty mins") {
+        else if (schedule[0].duration === "Thirty mins") {
             dura = 30;
         }
         while (startTime.setMinutes(startTime.getMinutes() + dura) <= endTime) {
@@ -160,7 +151,7 @@ const TimeTable = forwardRef(({ schedule, loading, sessions, handleRadioChange }
                             let test = true;
                             while (test) {
                                 arr2d[i][j].forEach(element => {
-                                    if (sessionCnt < sessionLen && element.groupIdSub == sessionList[sessionCnt].groupIdSub) {
+                                    if (sessionCnt < sessionLen && element.groupIdSub === sessionList[sessionCnt].groupIdSub) {
                                         j++;
                                     }
                                     else {

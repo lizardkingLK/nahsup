@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { IconButton } from '@material-ui/core';
+import { IconButton, TextField } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import TextField from '@material-ui/core/TextField';
 import Skeleton from '@material-ui/lab/Skeleton';
 
 import Table from './Table';
@@ -46,20 +45,20 @@ const createData = (rID, rType, bID, capacity, id) => {
 
 const Locations = () => {
     const classes = useStyles();
-    const [locations, setLocations] = useState([]);
-    const [buildings, setBuildings] = useState([]);
-    const [tags, setTags] = useState([]);
-    const [subjects, setSubjects] = useState([]);
-    const [lecturers, setLecturers] = useState([]);
-    const [groupIDs, setGroupIDs] = useState([]);
-    const [subGroupIDs, setSubGroupIDs] = useState([]);
-    const [sessions, setSessions] = useState([]);
+    const [locations, setLocations] = React.useState([]);
+    const [buildings, setBuildings] = React.useState([]);
+    const [tags, setTags] = React.useState([]);
+    const [subjects, setSubjects] = React.useState([]);
+    const [lecturers, setLecturers] = React.useState([]);
+    const [groupIDs, setGroupIDs] = React.useState([]);
+    const [subGroupIDs, setSubGroupIDs] = React.useState([]);
+    const [sessions, setSessions] = React.useState([]);
 
-    const [loading, setLoading] = useState(true);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [locationsPerPage] = useState(5);
-    const [selected, setSelected] = useState('');
-    const [editable, setEditable] = useState('');
+    const [loading, setLoading] = React.useState(true);
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const [locationsPerPage] = React.useState(5);
+    const [selected, setSelected] = React.useState('');
+    const [editable, setEditable] = React.useState('');
 
     // get current locations
     const indexOfLastLocation = currentPage * locationsPerPage;
@@ -155,7 +154,7 @@ const Locations = () => {
     }
 
     // useeffect => runs when mounted and also when content gets updated
-    useEffect(() => {
+    React.useEffect(() => {
         fetchBuildings();
         fetchLocations();
         fetchTags();

@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Typography, Card, CardContent, Box, Button } from '@material-ui/core';
+import { Typography, Card, CardContent, Box } from '@material-ui/core';
 
 import MyChart from './MyChart';
 
@@ -76,7 +76,7 @@ export default function Statistics() {
         });
     }
 
-    useEffect(() => {
+    React.useState(() => {
         fetchBuildings();
         fetchLocations();
     }, [])

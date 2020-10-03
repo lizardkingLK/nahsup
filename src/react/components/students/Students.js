@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import { IconButton } from '@material-ui/core';
+import { IconButton, TextField } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import TextField from '@material-ui/core/TextField';
 
 import Table from './Table';
 import Pagination from './Pagination';
@@ -38,13 +37,13 @@ const createData = (year, sem, programme, group, subGroup, id) => {
 const Students = () => {
     const classes = useStyles();
 
-    const [students, setStudents] = useState([]);
+    const [students, setStudents] = React.useState([]);
 
-    const [loading, setLoading] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [studentsPerPage] = useState(5);
-    const [selected, setSelected] = useState('');
-    const [editable, setEditable] = useState('');
+    const [loading, setLoading] = React.useState(false);
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const [studentsPerPage] = React.useState(5);
+    const [selected, setSelected] = React.useState('');
+    const [editable, setEditable] = React.useState('');
 
     // get current students
     const indexOfLastStudent = currentPage * studentsPerPage;
@@ -69,7 +68,7 @@ const Students = () => {
         setLoading(false);
     }
 
-    useEffect(() => {
+    React.useEffect(() => {
         fetchStudents();
     }, []);
 

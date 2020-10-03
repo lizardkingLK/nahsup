@@ -1,18 +1,11 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, IconButton, Typography, Checkbox } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Alert from '@material-ui/lab/Alert';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import Card from '@material-ui/core/Card';
-import EditIcon from '@material-ui/icons/Edit';
+import {
+    Button, IconButton, Typography, Checkbox, TextField, Dialog, DialogActions, DialogContent, DialogTitle, InputLabel, Select, MenuItem, Card,
+} from '@material-ui/core';
 import { KeyboardTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import Alert from '@material-ui/lab/Alert';
+import EditIcon from '@material-ui/icons/Edit';
 import DateFnsUtils from '@date-io/date-fns';
 
 import { channels } from '../../../shared/constants';

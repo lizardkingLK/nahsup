@@ -41,7 +41,6 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function Preferences({ locations, tags, subjects, lecturers, groupIDs, subGroupIDs, sessions }) {
-    // const classes = useStyles();
     const [open, setOpen] = React.useState(false);
 
     // tags

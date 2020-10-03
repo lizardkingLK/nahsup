@@ -1,18 +1,11 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, IconButton, Typography } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import {
+    Typography, IconButton, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, InputLabel, Select, MenuItem,
+    Card, FormControl
+} from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import Card from '@material-ui/core/Card';
 import AddIcon from '@material-ui/icons/Add';
-import FormControl from '@material-ui/core/FormControl';
 
 import { channels } from '../../../shared/constants';
 const { ipcRenderer } = window.require('electron');

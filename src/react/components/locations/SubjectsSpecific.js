@@ -2,8 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Autocomplete, Alert } from '@material-ui/lab';
 import {
-    Button, Typography, TextField, Select, MenuItem,
-    Card,
+    Button, Typography, TextField, Select, MenuItem, Card,
 } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({

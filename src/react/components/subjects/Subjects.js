@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, IconButton } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -42,13 +42,13 @@ const createData = (subCode, year, sem, name, lecHrs, tuteHrs, labHrs, evalHrs, 
 
 const Subjects = () => {
     const classes = useStyles();
-    const [subjects, setSubjects] = useState([]);
+    const [subjects, setSubjects] = React.useState([]);
 
-    const [loading, setLoading] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [subjectsPerPage] = useState(5);
-    const [selected, setSelected] = useState('');
-    const [editable, setEditable] = useState('');
+    const [loading, setLoading] = React.useState(false);
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const [subjectsPerPage] = React.useState(5);
+    const [selected, setSelected] = React.useState('');
+    const [editable, setEditable] = React.useState('');
 
     // get current Subjects
     const indexOfLastSubject = currentPage * subjectsPerPage;
@@ -76,7 +76,7 @@ const Subjects = () => {
     }
 
     // useeffect => runs when mounted and also when content gets updated
-    useEffect(() => {
+    React.useEffect(() => {
         fetchSubjects();
     }, []);
 

@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import { IconButton } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
+import { IconButton, TextField } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 import Table from './Table';
@@ -39,16 +38,16 @@ const createData = (lecName, tag, subName, subCode, groupIdSub, studentCount, Du
 
 const Sessions = () => {
     const classes = useStyles();
-    const [sessions, setSessions] = useState([]);
-    const [subjects, setSubjects] = useState([]);
-    const [lc, setLc] = useState([]);
-    const [students, setStudents] = useState([]);
+    const [sessions, setSessions] = React.useState([]);
+    const [subjects, setSubjects] = React.useState([]);
+    const [lc, setLc] = React.useState([]);
+    const [students, setStudents] = React.useState([]);
 
-    const [loading, setLoading] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [sessionsPerPage] = useState(5);
-    const [selected, setSelected] = useState('');
-    const [editable, setEditable] = useState('');
+    const [loading, setLoading] = React.useState(false);
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const [sessionsPerPage] = React.useState(5);
+    const [selected, setSelected] = React.useState('');
+    const [editable, setEditable] = React.useState('');
 
     // get current sessions
     const indexOfLastSession = currentPage * sessionsPerPage;
@@ -74,7 +73,7 @@ const Sessions = () => {
     }
 
     // useeffect => runs when mounted and also when content gets updated
-    useEffect(() => {
+    React.useEffect(() => {
         fetchSessions()
 
         const fetchLecturers = async () => {
