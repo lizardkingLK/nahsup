@@ -25,32 +25,39 @@ const useStyles = makeStyles((theme) => ({
     table: {
         minWidth: 650,
     },
+    pagination: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+    },
     pref: {
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(1),
     }
 }))
 
-const createData = (lecName, tag, subName, subCode, groupIdSub, studentCount, Duration, id) => {
-    return { lecName, tag, subName, subCode, groupIdSub, studentCount, Duration, id };
-}
-
 const ConsecutiveSessions = () => {
     const classes = useStyles();
     const [sessions, setSessions] = React.useState([]);
-    const [ConSessions, setConSessions] = React.useState([]);
-    const [conSessionAddSuccess, setConSessionAddSuccess] = React.useState({ type: 'info', msg: 'Enter two sessions lecture & tute' });
+    const [conSessions, setConSessions] = React.useState([]);
+    const [conSessionAddSuccess, setConSessionAddSuccess] = React.useState(
+        { type: 'info', msg: 'Enter two sessions lecture & tute' }
+    );
 
     const [loading, setLoading] = React.useState(false);
     const [currentPage, setCurrentPage] = React.useState(1);
-    const [ConSessionsPerPage] = React.useState(3);
-    const [sessionA, setSessionA] = React.useState('');
-    const [sessionB, setSessionB] = React.useState('');
+    const [conSessionsPerPage] = React.useState(20);
 
     // get current sessions
-    const indexOfLastSession = currentPage * ConSessionsPerPage;
-    const indexOfFirstSession = indexOfLastSession - ConSessionsPerPage;
-    const currentSessions = ConSessions.slice(indexOfFirstSession, indexOfLastSession);
+    const indexOfLastSession = currentPage * conSessionsPerPage;
+    const indexOfFirstSession = indexOfLastSession - conSessionsPerPage;
+    const currentSessions = conSessions.slice(indexOfFirstSession, indexOfLastSession);
+
+    const [selected, setSelected] = React.useState('');
+    const [editable, setEditable] = React.useState('');
+
+    const [sessionA, setSessionA] = React.useState('');
+    const [sessionB, setSessionB] = React.useState('');
 
     // change page
     const paginate = (pageNumber) => {
@@ -65,7 +72,7 @@ const ConsecutiveSessions = () => {
         else {
             console.log(sessionA)
             console.log(sessionB)
-            ipcRenderer.send(channels.ADD_CONSECUTIVE, { load: { A: sessionA, B: sessionB } });
+            ipcRenderer.send(channels.ADD_CONSECUTIVE, { load: [sessionA, sessionB] });
             await ipcRenderer.on(channels.ADD_CONSECUTIVE, (event, arg) => {
                 ipcRenderer.removeAllListeners(channels.ADD_CONSECUTIVE);
                 const { success } = arg;
@@ -76,6 +83,7 @@ const ConsecutiveSessions = () => {
                     });
                     setSessionA('');
                     setSessionB('');
+                    sessionsUpdated();
                 }
                 else {
                     setConSessionAddSuccess({
@@ -99,19 +107,34 @@ const ConsecutiveSessions = () => {
         });
     }
 
+    const fetchConSessions = async () => {
+        await ipcRenderer.send(channels.LOAD_CONSECUTIVE);
+
+        ipcRenderer.on(channels.LOAD_CONSECUTIVE, (event, arg) => {
+            ipcRenderer.removeAllListeners(channels.LOAD_CONSECUTIVE);
+            const rs = arg;
+            setConSessions(rs);
+        });
+    }
+
     // useeffect => runs when mounted and also when content gets updated
     React.useEffect(() => {
         fetchSessions();
+        fetchConSessions();
     }, []);
 
     // refresh table
     const sessionsUpdated = () => {
-
+        fetchSessions();
+        fetchConSessions();
     }
 
     // session selection changed
     const handleRadioChange = (value) => {
-
+        setSelected(value);
+        let tConSessions = conSessions;
+        const edit = tConSessions.filter(l => (l.id === value))[0];
+        setEditable(edit);
     }
 
     return (
@@ -121,6 +144,7 @@ const ConsecutiveSessions = () => {
                     size="small"
                     color="primary"
                     component="span"
+                    onClick={() => sessionsUpdated()}
                 >
                     <RefreshIcon />
                 </IconButton>
@@ -138,14 +162,17 @@ const ConsecutiveSessions = () => {
             <div className={classes.row}>
                 <Table
                     loading={loading}
+                    setLoading={setLoading}
+                    currentSessions={currentSessions}
+                    sessions={sessions}
                     handleRadioChange={handleRadioChange}
                 />
             </div>
 
             <div className={classes.pagination}>
                 <Pagination
-                    ConSessionsPerPage={ConSessionsPerPage}
-                    totalSessions={ConSessions.length}
+                    conSessionsPerPage={conSessionsPerPage}
+                    totalSessions={conSessions.length}
                     paginate={paginate}
                 />
             </div>
@@ -162,7 +189,11 @@ const ConsecutiveSessions = () => {
                     setConSessionAddSuccess={setConSessionAddSuccess}
                 />
 
-                <DeleteConSession />
+                <DeleteConSession
+                    selected={selected}
+                    setSelected={setSelected}
+                    sessionsUpdated={sessionsUpdated}
+                />
             </div>
         </div>
     )

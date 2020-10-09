@@ -3,8 +3,8 @@ const Schema = mongoose.Schema
 
 const ConsecutiveSchema = new Schema({
     sessions: {
-        type: Object,
-        default: null
+        type: Array,
+        default: []
     },
     lastUpdated: {
         type: Date,

@@ -483,6 +483,28 @@ ipcMain.on(channels.ADD_CONSECUTIVE, async (event, arg) => {
     })
 })
 
+ipcMain.on(channels.LOAD_CONSECUTIVE, async (event) => {
+    await ConsecutiveDao.loadConSessions(function (rs) {
+        const consArray = rs.map(r => {
+            const sessions = r.sessions
+            const lastUpdated = r.lastUpdated
+            const id = r._id.toString()
+            return ({ sessions, lastUpdated, id })
+        })
+        event.sender.send(channels.LOAD_CONSECUTIVE, consArray)
+    })
+})
+
+ipcMain.on(channels.DELETE_CONSECUTIVE, async (event, arg) => {
+    const { selected } = arg
+    await ConsecutiveDao.deleteConSession(selected, function (r) {
+        const { success } = r
+        event.sender.send(channels.DELETE_CONSECUTIVE, {
+            success: success
+        })
+    })
+})
+
 // tags
 ipcMain.on(channels.ADD_TAG, async (event, arg) => {
     const { tagName } = arg

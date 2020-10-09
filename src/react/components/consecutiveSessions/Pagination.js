@@ -1,40 +1,35 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button } from '@material-ui/core';
+import Pagination from '@material-ui/lab/Pagination';
 
 const useStyles = makeStyles((theme) => ({
-    pagination: {
+    root: {
+        '& > *': {
+            marginTop: theme.spacing(2),
+        },
         display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        margin: theme.spacing(1),
-        listStyle: 'none',
+        justifyItems: 'center'
     },
-}))
+}));
 
-const MyPagination = ({ ConSessionsPerPage, totalConSessions, paginate }) => {
+export default function PaginationOutlined({ conSessionsPerPage, totalConSessions, paginate }) {
     const classes = useStyles();
-    const pageNumbers = [];
 
-    for (let i = 1; i <= Math.ceil(totalConSessions / ConSessionsPerPage); i++) {
-        pageNumbers.push(i);
+    const handleChange = (e) => {
+        let number = e.target.textContent;
+        if (number !== '')
+            paginate(parseInt(number))
     }
 
     return (
-        <nav>
-            <ul className={classes.pagination}>
-                {pageNumbers.map(number => (
-                    <li key={number}>
-                        <Button size="small" onClick={() => paginate(number)} className="page-link">
-                            {number}
-                        </Button>
-                    </li>
-                ))}
-            </ul>
-        </nav>
-    )
+        <div className={classes.root}>
+            <Pagination
+                onChange={handleChange}
+                count={Math.ceil(totalConSessions / conSessionsPerPage)}
+                size="small"
+                hidePrevButton
+                hideNextButton
+            />
+        </div>
+    );
 }
-
-
-export default MyPagination;

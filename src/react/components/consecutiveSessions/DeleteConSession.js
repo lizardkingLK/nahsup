@@ -6,8 +6,8 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete';
 import Alert from '@material-ui/lab/Alert';
 
-// import { channels } from '../../../shared/constants';
-// const { ipcRenderer } = window.require('electron');
+import { channels } from '../../../shared/constants';
+const { ipcRenderer } = window.require('electron');
 
 const useStyles = makeStyles((theme) => ({
     myAlert: {
@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-export default function DeleteConSession({ selected }) {
+export default function DeleteConSession({ selected, setSelected, sessionsUpdated }) {
     const classes = useStyles();
 
     const [open, setOpen] = React.useState(false);
@@ -33,6 +33,24 @@ export default function DeleteConSession({ selected }) {
         setOpen(false);
         setDeleteSuccess({
             state: false, type: 'warning', msg: 'Do you want to delete this Session?'
+        });
+    };
+
+    const acceptClose = async () => {
+        await ipcRenderer.send(channels.DELETE_CONSECUTIVE, { selected });
+        ipcRenderer.on(channels.DELETE_CONSECUTIVE, (event, arg) => {
+            ipcRenderer.removeAllListeners(channels.DELETE_CONSECUTIVE);
+            const { success } = arg;
+            if (success) {
+                setDeleteSuccess({
+                    state: true, type: 'success', msg: 'Consecutive Session Deleted Successfully!'
+                });
+                sessionsUpdated();
+            }
+            else
+                setDeleteSuccess({
+                    state: false, type: 'error', msg: 'Consecutive Session Not Deleted.'
+                });
         });
     };
 
@@ -65,7 +83,7 @@ export default function DeleteConSession({ selected }) {
                     {!deleteSuccess.state
                         ?
                         <>
-                            <Button color="primary" >
+                            <Button color="primary" onClick={acceptClose}>
                                 Yes
                             </Button>
                             <Button onClick={handleClose} color="primary" autoFocus>

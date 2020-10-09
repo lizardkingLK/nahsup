@@ -73,5 +73,6 @@ module.exports = {
         // consecutive sessions
         ADD_CONSECUTIVE: 'add_consecutive',
         LOAD_CONSECUTIVE: 'load_consecutive',
+        DELETE_CONSECUTIVE: 'delete_consecutive'
     },
 };
