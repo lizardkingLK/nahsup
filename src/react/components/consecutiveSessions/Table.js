@@ -34,6 +34,9 @@ const Posts = ({ loading, setLoading, currentSessions, sessions, handleRadioChan
         return sessions.filter(s => s.id === id)[0]
     }
 
+    console.log(currentSessions);
+
+
     return (
         <TableContainer component={Paper}>
             <Table className={classes.table} aria-label="sessions table" size="small">
@@ -61,7 +64,7 @@ const Posts = ({ loading, setLoading, currentSessions, sessions, handleRadioChan
                             </TableCell>
                             {row.sessions.map(s => {
                                 let se = getSession(s)
-                                return (
+                                return se !== null ? (
                                     <TableCell key={se.id} component="th" scope="row">
                                         {(se.lecName).map(ln => (ln + ", ")
                                         )}<br />
@@ -70,7 +73,11 @@ const Posts = ({ loading, setLoading, currentSessions, sessions, handleRadioChan
                                         {se.groupIdSub}<br />
                                         {se.studentCount} ({se.Duration})
                                     </TableCell>
-                                )
+                                ) : (
+                                        <TableCell key={s} component="th" scope="row">
+                                            {s}
+                                        </TableCell>
+                                    )
                             })}
                         </TableRow>
                     ))}

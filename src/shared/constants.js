@@ -41,6 +41,9 @@ module.exports = {
         DELETE_SCHEDULE: 'delete_schedule',
         LOAD_SCHEDULE: 'load_schedule',
         SEARCH_SCHEDULE: 'search_schedule',
+		LOAD_STUDENTS_FOR_TT: 'load_students_for_tt',
+        LOAD_PREFERENCE_FOR_TT:'load_preference_for_tt',
+        LOAD_COSECUTIVES_FOR_TT:'load_consecutives_for_tt',
 
         // nimaya's
         // students

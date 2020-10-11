@@ -373,6 +373,45 @@ ipcMain.on(channels.EDIT_SCHEDULE, async (event, arg) => {
     })
 })
 
+//Time Table
+ipcMain.on(channels.LOAD_STUDENTS_FOR_TT, async (event) => {
+    await StudentDao.loadStudents(function (rs) {
+        const rsArray = rs.map(r => {
+            const year = r.year
+            const sem = r.sem
+            const programme = r.programme
+            const group = r.group
+            const subGroup = r.subGroup
+            const subGroupIdLabel = r.subGroupIdLabel
+            const groupIdLabel = r.groupIdLabel
+            const id = r._id.toString()
+            return ({ year, sem, programme, group, subGroup, subGroupIdLabel, groupIdLabel, id })
+        })
+        event.sender.send(channels.LOAD_STUDENTS_FOR_TT, rsArray)
+    })
+})
+
+ipcMain.on(channels.LOAD_PREFERENCE_FOR_TT, async (event) => {
+    await PreferenceDao.loadPreferences(function (bs) {
+        const bsArray = bs.map(b => {
+            const bID = b.bID
+            const id = b._id.toString()
+            return ({ bID, id })
+        })
+        event.sender.send(channels.LOAD_PREFERENCE_FOR_TT, bsArray)
+    })
+})
+ipcMain.on(channels.LOAD_COSECUTIVES_FOR_TT, async (event) => {
+    await ConsecutiveDao.loadConSessions(function (bs) {
+        const bsArray = bs.map(b => {
+            const bID = b.bID
+            const id = b._id.toString()
+            return ({ bID, id })
+        })
+        event.sender.send(channels.LOAD_COSECUTIVES_FOR_TT, bsArray)
+    })
+})
+
 // nimaya's
 
 // students
